@@ -4,7 +4,9 @@ USE stocksimdb;
 CREATE TABLE users (
    username VARCHAR(60) NOT NULL,
    password VARCHAR(60) NOT NULL,
-   enabled TINYINT NOT NULL DEFAULT 1,
+   email VARCHAR(60) NOT NULL,
+   enabled BOOLEAN NOT NULL DEFAULT TRUE,
+   confirmed BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (username));
    
 CREATE TABLE user_roles (
