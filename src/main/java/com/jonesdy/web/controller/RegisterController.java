@@ -64,6 +64,16 @@ public class RegisterController
          model.addObject("failureReason", "Passwords did not match.");
          model.setViewName("registrationFailure");
       }
+      else if(user.getUsername().length() > 60)
+      {
+         model.addObject("failureReason", "Username is too long.");
+         model.setViewName("registrationFailure");
+      }
+      else if(user.getEmail().length() > 60)
+      {
+         model.addObject("failureReason", "Email is too long.");
+         model.setViewName("registrationFailure");
+      }
       else
       {
          String registerError = registerUser(user);
