@@ -6,23 +6,19 @@
 <%@page isELIgnored="false"%>
 <html>
 <head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <title>Registration Success</title>
 </head>
 <body>
-   <div align="center">
-      <table border="0">
-         <tr>
-            <td colspan="2" align="center"><h2>Registration Succeeded!</h2></td>
-         </tr>
-         <tr>
-            <td>User Name:</td>
-            <td>${username}</td>
-         </tr>
-         <tr>
-            <td>Email:</td>
-            <td>${email}</td>
-         </tr>
-      </table>
+   <div class='container'>
+      <h2>Registration Succeeded!</h2>
+      <label>User Name: ${username}</label><br />
+      <label>Email: ${email}</label>
    </div>
 </body>
 </html>
