@@ -1,4 +1,4 @@
 StockSim
 ========
 
-A stock simulator using JSP
+A stock simulator website.

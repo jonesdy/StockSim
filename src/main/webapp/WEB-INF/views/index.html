@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<title>Welcome</title>
+</head>
+<body>
+   <h1>Title: <span th:text="${title}" /></h1>
+   <h1>Message: <span th:text="${message}" /></h1>
+   <div sec:authorize="hasRole('ROLE_USER')">
+      <!--  For logged in user -->
+      <form action="logout" method="post" id="logoutForm">
+         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      </form>
+      <script>
+         function formSubmit()
+         {
+            document.getElementById("logoutForm").submit();
+         }
+      </script>
+      <h2>User: <span sec:authentication="name"></span> |
+            <a href="javascript:formSubmit()"> Logout</a>
+      </h2>
+   </div>
+</body>
+</html>

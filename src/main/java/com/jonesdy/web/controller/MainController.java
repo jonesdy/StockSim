@@ -62,6 +62,7 @@ public class MainController
          UserDetails userDetails = (UserDetails)auth.getPrincipal();
          model.addObject("username", userDetails.getUsername());
       }
+      model.setViewName("403");
       
       return model;
    }
