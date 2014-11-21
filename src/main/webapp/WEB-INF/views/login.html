@@ -9,10 +9,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <title>Login Page</title>
 </head>
-<body onload='document.loginForm.username.focus();'>
-   <div class='container'>
+<body onload="document.loginForm.username.focus();">
+   <div class="container">
 	   <h1>Spring Security Login Form (Database Authentication)</h1>
-	   <div id='login-box'>
+	   <div id="login-box">
 	      <h3>Login with User Name and Password</h3>
 	      <div th:if="${error}" style="padding-top: 15px; padding-bottom: 25px;"><span class="alert alert-danger"><span th:text="${error}" /></span></div>
 	      <div th:if="${msg}" style="padding-top: 15px; padding-bottom: 25px;"><span class="alert alert-info"><span th:text="${msg}" /></span></div>

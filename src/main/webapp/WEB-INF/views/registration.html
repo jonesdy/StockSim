@@ -13,27 +13,27 @@
    <div class="container">
       <h1>Register here</h1>
       <form action="#" th:action="@{/register}" th:object="${user}" method="POST">
-         <div class='form-group'>
+         <div class="form-group">
 	            <label>User Name:</label>
 	            <input type="text" name="username" class="form-control" placeholder="Enter username" />
 	      </div>
-	      <div class='form-group'>
+	      <div class="form-group">
                <label>Email:</label>
-               <input type='text' name='email' class='form-control' placeholder='Enter email' />
+               <input type="text" name="email" class="form-control" placeholder="Enter email" />
          </div>
-         <div class='form-group'>
+         <div class="form-group">
                <label>Confirm email:</label>
-               <input type='text' name='emailConfirm' class='form-control' placeholder='Enter email again' />
+               <input type="text" name="emailConfirm" class="form-control" placeholder="Enter email again" />
          </div>
-         <div class='form-group'>
+         <div class="form-group">
                <label>Password:</label>
-               <input type='password' name='password' class='form-control' placeholder='Enter password' />
+               <input type="password" name="password" class="form-control" placeholder="Enter password" />
          </div>
-         <div class='form-group'>
+         <div class="form-group">
                <label>Confirm password:</label>
-               <input type='password' name='passwordConfirm' class='form-control' placeholder='Enter password again' />
+               <input type="password" name="passwordConfirm" class="form-control" placeholder="Enter password again" />
          </div>
-         <button type='submit' class='btn btn-default'>Register</button>
+         <button type="submit" class="btn btn-default">Register</button>
          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       </form>
    </div>
