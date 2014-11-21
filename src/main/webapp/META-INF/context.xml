@@ -2,5 +2,6 @@
 <Context>
     <ResourceLink name="jdbc/stocksimdb"
       global="jdbc/stocksimdb"
-      type="javax.sql.DataSource"/>
+      type="javax.sql.DataSource"
+      driverClassname="org.mariadb.jdbc.Driver"/>
 </Context>
