@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class MainController
 {
-   @RequestMapping(value = "/", method = RequestMethod.GET)
+   @RequestMapping(value = {"/", "index"}, method = RequestMethod.GET)
    public ModelAndView defaultPage()
    {
       ModelAndView model = new ModelAndView();
@@ -40,7 +40,7 @@ public class MainController
       ModelAndView model = new ModelAndView();
       if(error != null)
       {
-         model.addObject("error", "Invalid username and password!");
+         model.addObject("error", "Invalid username or password!");
       }
       if(logout != null)
       {

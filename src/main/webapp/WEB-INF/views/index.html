@@ -10,6 +10,7 @@
 <title>Welcome</title>
 </head>
 <body>
+   <div th:replace="navbar"></div>
    <h1>Title: <span th:text="${title}" /></h1>
    <h1>Message: <span th:text="${message}" /></h1>
    <div sec:authorize="hasRole('ROLE_USER')">

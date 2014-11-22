@@ -9,6 +9,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </head>
 <body>
+   <div th:replace="navbar"></div>
    <h1>Title: <span th:text="${title}" /></h1>
    <h1>Message: <span th:text="${message}" /></h1>
    <form action="logout" method="post" id="logoutForm">
