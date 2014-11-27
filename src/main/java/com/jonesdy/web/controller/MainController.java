@@ -1,5 +1,12 @@
 package com.jonesdy.web.controller;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -48,6 +56,53 @@ public class MainController
       }
       model.setViewName("login");
       return model;
+   }
+   
+   @RequestMapping(value = "/isUsernameAvailable", method=RequestMethod.GET, produces="application/json")
+   public @ResponseBody boolean isUsernameAvailable(@RequestParam(value = "username", required = true) String username)
+   {
+      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+      dsLookup.setResourceRef(true);
+      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+      
+      try
+      {
+         String checkUsername = "SELECT * FROM users WHERE username = ?";
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(checkUsername);
+         ps.setString(1, username);
+         rs = ps.executeQuery();
+         return !rs.next();
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can really do here
+         }
+      }
    }
    
    @RequestMapping(value = "/403", method = RequestMethod.GET)

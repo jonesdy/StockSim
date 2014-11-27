@@ -104,7 +104,6 @@ public class RegisterController
       try
       {
          String checkUsername = "SELECT * FROM users WHERE username = ?";
-         String checkEmail = "SELECT * FROM users WHERE email = ?";
          String addUser = "INSERT INTO users (username, password, email, enabled, confirmed) VALUES (?, ?, ?, ?, ?)";
          String addUserRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
          
@@ -116,17 +115,6 @@ public class RegisterController
          if(rs.next())
          {
             return "User Name already exists.";
-         }
-         rs.close();
-         ps.close();
-         
-         ps = connection.prepareStatement(checkEmail);
-         ps.setString(1, user.getEmail());
-         rs = ps.executeQuery();
-         if(rs.next())
-         {
-            // TODO: This might not actually be important
-            return "Email already used.";
          }
          rs.close();
          ps.close();

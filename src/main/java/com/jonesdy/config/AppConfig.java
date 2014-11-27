@@ -1,5 +1,8 @@
 package com.jonesdy.config;
 
+import java.text.DateFormat;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
@@ -8,18 +11,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 @EnableWebMvc
 @Configuration
 @ComponentScan({"com.jonesdy.web.*"})
 @Import({SecurityConfig.class})
-public class AppConfig
+public class AppConfig extends WebMvcConfigurerAdapter
 {
    @Bean(destroyMethod = "")
    public DataSource dataSource()
@@ -47,7 +57,8 @@ public class AppConfig
       return templateEngine;
    }
    
-   @Bean public ServletContextTemplateResolver templateResolver()
+   @Bean
+   public ServletContextTemplateResolver templateResolver()
    {
       ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
       templateResolver.setPrefix("/WEB-INF/views/");
@@ -57,5 +68,20 @@ public class AppConfig
       // Disable caching for now
       templateResolver.setCacheable(false);
       return templateResolver;
+   }
+   
+   @Override
+   public void addResourceHandlers(ResourceHandlerRegistry registry)
+   {
+      registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+   }
+   
+   @Override
+   public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
+   {
+      Gson gson = new GsonBuilder().setDateFormat(DateFormat.LONG).create();
+      GsonHttpMessageConverter messageConverter = new GsonHttpMessageConverter();
+      messageConverter.setGson(gson);
+      converters.add(messageConverter);
    }
 }
