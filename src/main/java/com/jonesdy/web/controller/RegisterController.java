@@ -3,7 +3,14 @@ package com.jonesdy.web.controller;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Properties;
+import java.util.Random;
 
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
@@ -103,9 +110,10 @@ public class RegisterController
       ResultSet rs = null;
       try
       {
-         String checkUsername = "SELECT * FROM users WHERE username = ?";
-         String addUser = "INSERT INTO users (username, password, email, enabled, confirmed) VALUES (?, ?, ?, ?, ?)";
-         String addUserRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
+         final String checkUsername = "SELECT * FROM users WHERE username = ?";
+         final String addUser = "INSERT INTO users (username, password, email, confirmCode, enabled, confirmed) VALUES (?, ?, ?, ?, ?, ?)";
+         final String addUserRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
+         final String checkConfirmCode = "SELECT * FROM users WHERE confirmCode = ?";
          
          connection = dataSource.getConnection();         
          
@@ -118,6 +126,28 @@ public class RegisterController
          }
          rs.close();
          ps.close();
+         ps = null;
+         rs = null;
+         
+         // Generate a confirm code and make sure it is unique
+         boolean unique = false;
+         String confirmCode = generateConfirmCode();
+         while(!unique)
+         {
+            ps = connection.prepareStatement(checkConfirmCode);
+            ps.setString(1, confirmCode);
+            rs = ps.executeQuery();
+            unique = !rs.next();
+            rs.close();
+            ps.close();
+            ps = null;
+            rs = null;
+            
+            if(!unique)
+            {
+               confirmCode = generateConfirmCode();
+            }
+         }
          
          // Time to add the user
          BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -126,10 +156,12 @@ public class RegisterController
          ps.setString(1, user.getUsername());
          ps.setString(2, passwordHash);
          ps.setString(3, user.getEmail());
-         ps.setBoolean(4, true);
-         ps.setBoolean(5, true); // TODO: Confirmation later
+         ps.setString(4, confirmCode);
+         ps.setBoolean(5, true);
+         ps.setBoolean(6, false);
          ps.executeUpdate();
          ps.close();
+         ps = null;
          
          // Need to add user role as well
          // TODO: If this fails, remove the user
@@ -138,13 +170,22 @@ public class RegisterController
          ps.setString(2, "ROLE_USER");
          ps.executeUpdate();
          ps.close();
-         
          ps = null;
-         rs = null;
+         
+         // Send the email
+         Properties properties = System.getProperties();
+         properties.setProperty("mail.smtp.host", "openstocksim.com");
+         Session session = Session.getDefaultInstance(properties);
+         MimeMessage message = new MimeMessage(session);
+         message.setFrom(new InternetAddress("noreply@openstocksim.com"));
+         message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
+         message.setSubject("OpenStockSim confirmation code");
+         message.setText("Welcome to Open Stock Sim!\nPlease click https://www.openstocksim.com/confirm?code=" + confirmCode + " to confirm your account.");
+         Transport.send(message);
       }
       catch(Exception e)
       {
-         return "Failed to connect to database.";
+         return "Failed with exception: " + e.toString();
       }
       finally
       {
@@ -169,5 +210,18 @@ public class RegisterController
          }
       }
       return null;
+   }
+   
+   private static String generateConfirmCode()
+   {
+      final String letters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      final int codeLength = 32;
+      Random random = new Random();
+      StringBuilder sb = new StringBuilder(codeLength);
+      for(int i = 0; i < codeLength; i++)
+      {
+         sb.append(letters.charAt(random.nextInt(letters.length())));
+      }
+      return sb.toString();
    }
 }
