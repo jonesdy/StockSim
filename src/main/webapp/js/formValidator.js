@@ -26,7 +26,7 @@ function initializeForm()
    document.getElementById("passwordConfirmError").innerHTML = "";
    document.getElementById("passwordConfirmErrorDiv").style.display = "none";
    
-   document.getElementById("submitButton").disabled = true;
+   //document.getElementById("submitButton").disabled = true;
 }
 
 function validateUsername()
@@ -272,12 +272,17 @@ function validateForm()
    valid &= validatePassword();
    valid &= validatePasswordConfirm();
    
-   if(valid)
+   /*if(valid)
    {
       submitButtonElement.disabled = false;
    }
    else
    {
       submitButtonElement.disabled = true;
+   }*/
+   
+   if(!valid)
+   {
+      return false;
    }
 }
