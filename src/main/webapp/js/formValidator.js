@@ -32,6 +32,12 @@ function initializeForm()
 function validateUsername()
 {
    var valid = true;
+   var usernameElement = document.getElementById("username");
+   
+   if(usernameElement.value.length != 0)
+   {
+      usernamePrestine = false;
+   }
    
    if(usernamePrestine)
    {
@@ -41,7 +47,7 @@ function validateUsername()
    }
    else
    {
-      var usernameElement = document.getElementById("username");
+      usernameElement = document.getElementById("username");
       if(usernameElement.value.length == 0)
       {
          document.getElementById("usernameError").innerHTML = "Error: User Name is blank.";
@@ -85,6 +91,12 @@ function disableUsernamePrestine()
 function validateEmail()
 {
    var valid = true;
+   var emailElement = document.getElementById("email");
+   
+   if(emailElement.value.length != 0)
+   {
+      emailPrestine = false;
+   }
    
    if(emailPrestine)
    {
@@ -94,7 +106,6 @@ function validateEmail()
    }
    else
    {
-      var emailElement = document.getElementById("email");
       if(emailElement.value.length == 0)
       {
          document.getElementById("emailError").innerHTML = "Error: Email is blank.";
@@ -132,6 +143,12 @@ function disableEmailPrestine()
 function validateEmailConfirm()
 {
    var valid = true;
+   var emailConfirmElement = document.getElementById("emailConfirm");
+   
+   if(emailConfirmElement.value.length != 0)
+   {
+      emailConfirmPrestine = false;
+   }
    
    if(emailConfirmPrestine)
    {
@@ -142,7 +159,7 @@ function validateEmailConfirm()
    else
    {
       var emailElement = document.getElementById("email");
-      var emailConfirmElement = document.getElementById("emailConfirm");
+      emailConfirmElement = document.getElementById("emailConfirm");
       if(emailConfirmElement.value.length == 0)
       {
          document.getElementById("emailConfirmError").innerHTML = "Error: Email is blank.";
@@ -186,6 +203,12 @@ function disableEmailConfirmPrestine()
 function validatePassword()
 {
    var valid = true;
+   var passwordElement = document.getElementById("password");
+   
+   if(passwordElement.value.length != 0)
+   {
+      passwordPrestine = false;
+   }
    
    if(passwordPrestine)
    {
@@ -195,7 +218,7 @@ function validatePassword()
    }
    else
    {
-      var passwordElement = document.getElementById("password");
+      passwordElement = document.getElementById("password");
       if(passwordElement.value.length == 0)
       {
          document.getElementById("passwordError").innerHTML = "Error: Password is blank.";
@@ -221,6 +244,12 @@ function disablePasswordPrestine()
 function validatePasswordConfirm()
 {
    var valid = true;
+   var passwordConfirmElement = document.getElementById("passwordConfirm");
+   
+   if(passwordConfirmElement.value.length != 0)
+   {
+      passwordConfirmPrestine = false;
+   }
    
    if(passwordConfirmPrestine)
    {
@@ -231,7 +260,7 @@ function validatePasswordConfirm()
    else
    {
       var passwordElement = document.getElementById("password");
-      var passwordConfirmElement = document.getElementById("passwordConfirm");
+      passwordConfirmElement = document.getElementById("passwordConfirm");
       if(passwordConfirmElement.value.length == 0)
       {
          document.getElementById("passwordConfirmError").innerHTML = "Error: Password is blank.";

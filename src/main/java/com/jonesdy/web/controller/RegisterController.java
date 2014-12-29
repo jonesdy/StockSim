@@ -108,6 +108,7 @@ public class RegisterController
       Connection connection = null;
       PreparedStatement ps = null;
       ResultSet rs = null;
+      String confirmCode = generateConfirmCode();
       try
       {
          final String checkUsername = "SELECT * FROM users WHERE username = ?";
@@ -131,7 +132,6 @@ public class RegisterController
          
          // Generate a confirm code and make sure it is unique
          boolean unique = false;
-         String confirmCode = generateConfirmCode();
          while(!unique)
          {
             ps = connection.prepareStatement(checkConfirmCode);
@@ -164,7 +164,6 @@ public class RegisterController
          ps = null;
          
          // Need to add user role as well
-         // TODO: If this fails, remove the user
          ps = connection.prepareStatement(addUserRole);
          ps.setString(1, user.getUsername());
          ps.setString(2, "ROLE_USER");
@@ -185,6 +184,7 @@ public class RegisterController
       }
       catch(Exception e)
       {
+         removeUser(user.getUsername());
          return "Failed with exception: " + e.toString();
       }
       finally
@@ -223,5 +223,56 @@ public class RegisterController
          sb.append(letters.charAt(random.nextInt(letters.length())));
       }
       return sb.toString();
+   }
+   
+   private static void removeUser(String username)
+   {
+      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+      dsLookup.setResourceRef(true);
+      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
+      Connection connection = null;
+      PreparedStatement ps = null;
+      
+      try
+      {
+         final String removeUserRole = "DELETE FROM user_roles WHERE username = ?";
+         final String removeUser = "DELETE FROM users WHERE username = ?";
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(removeUserRole);
+         ps.setString(1, username);
+         ps.executeQuery();
+         
+         ps.close();
+         ps = null;
+         
+         ps = connection.prepareStatement(removeUser);
+         ps.setString(1, username);
+         ps.executeQuery();
+         
+         ps.close();
+         ps = null;
+      }
+      catch(Exception e)
+      {
+         // Nothing we can do
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
    }
 }
