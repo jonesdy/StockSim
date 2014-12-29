@@ -132,7 +132,7 @@ public class MainController
          }
          else if(rs.getBoolean("confirmed"))    // Check that wasn't already confirmed
          {
-            model.addObject("error", "User was already confirmed!");
+            model.addObject("error", "User has already been confirmed!");
          }
          else     // Confirm the user
          {
