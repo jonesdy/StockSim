@@ -5,4 +5,4 @@ StockSim
 
 A stock simulator website using Java.
 
-Hosted at [StockSim](https://www.openstocksim.com).
+Hosted at https://www.openstocksim.com.
