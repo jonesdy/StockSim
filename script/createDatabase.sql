@@ -11,7 +11,7 @@ CREATE TABLE users (
    PRIMARY KEY (username));
    
 CREATE TABLE user_roles (
-   user_role_id INT(11) NOT NULL AUTO_INCREMENT,
+   user_role_id INT NOT NULL AUTO_INCREMENT,
    username VARCHAR(60) NOT NULL,
    role VARCHAR(60) NOT NULL,
    PRIMARY KEY (user_role_id),
@@ -20,35 +20,36 @@ CREATE TABLE user_roles (
    CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users (username));
    
 CREATE TABLE games (
-   gid INT(11) NOT NULL AUTO_INCREMENT,
+   gid INT NOT NULL AUTO_INCREMENT,
    title VARCHAR(60) NOT NULL,
-   starting_money INT(11) NOT NULL,
+   starting_money INT NOT NULL,
    private BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (gid));
    
 CREATE TABLE players (
-   pid INT(11) NOT NULL AUTO_INCREMENT,
+   pid INT NOT NULL AUTO_INCREMENT,
    username VARCHAR(60) NOT NULL,
-   gid INT(11) NOT NULL,
-   balance INT(11) NOT NULL,
+   gid INT NOT NULL,
+   balance INT NOT NULL,
    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (pid),
    CONSTRAINT fk_username_players FOREIGN KEY (username) REFERENCES users (username),
    CONSTRAINT fk_gid FOREIGN KEY (gid) REFERENCES games (gid));
    
 CREATE TABLE stocks (
-   sid INT(11) NOT NULL AUTO_INCREMENT,
+   sid INT NOT NULL AUTO_INCREMENT,
    ticker_symbol VARCHAR(10) NOT NULL,
-   pid INT(11) NOT NULL,
-   count INT(11) NOT NULL,
+   pid INT NOT NULL,
+   count INT NOT NULL,
    PRIMARY KEY (sid),
    CONSTRAINT fk_pid FOREIGN KEY (pid) REFERENCES players (pid));
    
 CREATE TABLE transactions (
-   tid INT(11) NOT NULL AUTO_INCREMENT,
-   sid INT(11) NOT NULL,
-   count INT(11) NOT NULL,
-   price INT(11) NOT NULL,       /* In pennies */
+   tid INT NOT NULL AUTO_INCREMENT,
+   sid INT NOT NULL,
+   count INT NOT NULL,
+   price INT NOT NULL,       /* In pennies */
+   timestamp BIGINT NOT NULL, /* Milliseconds since the epoch */
    buy BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (tid),
    CONSTRAINT fk_sid FOREIGN KEY (sid) REFERENCES stocks (sid));
