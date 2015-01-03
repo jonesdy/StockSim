@@ -3,6 +3,7 @@ package com.jonesdy.web.controller;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -196,6 +197,27 @@ public class MainController
       }
       model.setViewName("403");
       
+      return model;
+   }
+
+   @RequestMapping(value = "/games", method = RequestMethod.GET)
+   public ModelAndView gamesPage()
+   {
+      ModelAndView model = new ModelAndView();
+
+      ArrayList<String> userGames = new ArrayList<String>();
+      userGames.add("You are in this game!");
+      userGames.add("Also this one!");
+      userGames.add("And even this one!");
+      model.addObject("userGames", userGames);
+
+      ArrayList<String> publicGames = new ArrayList<String>();
+      publicGames.add("Anybody can join this game.");
+      publicGames.add("Another game that anybody can join.");
+      model.addObject("publicGames", publicGames);
+
+      model.setViewName("games");
+
       return model;
    }
 }

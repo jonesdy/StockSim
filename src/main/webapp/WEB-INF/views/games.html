@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script th:src="@{/js/formValidator.js}"></script>
+<title>Games Page</title>
+</head>
+<body>
+   <div th:replace="navbar"></div>
+   <div class="container">
+      <h3>Your Games:</h3>
+      <div class="list-group">
+         <a href="#" th:each="game : ${userGames}" class="list-group-item"><span th:text="${game}" /></a>
+      </div>
+
+      <h3>Public Games:</h3>
+      <div class="list-group">
+         <a href="#" th:each="game : ${publicGames}" class="list-group-item"><span th:text="${game}" /></a>
+      </div>
+   </div>
+</body>
+</html>
