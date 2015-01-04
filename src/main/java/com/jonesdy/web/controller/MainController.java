@@ -206,14 +206,125 @@ public class MainController
       ModelAndView model = new ModelAndView();
 
       ArrayList<String> userGames = new ArrayList<String>();
-      userGames.add("You are in this game!");
-      userGames.add("Also this one!");
-      userGames.add("And even this one!");
-      model.addObject("userGames", userGames);
-
       ArrayList<String> publicGames = new ArrayList<String>();
-      publicGames.add("Anybody can join this game.");
-      publicGames.add("Another game that anybody can join.");
+      ArrayList<Integer> userGids = new ArrayList<Integer>();
+
+      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+      dsLookup.setResourceRef(true);
+      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+      
+      try
+      {
+         final String getPlayers = "SELECT gid FROM players WHERE username = ?";
+         final String getGameNames = "SELECT title FROM games WHERE gid = ?";
+         final String getPublicGames = "SELECT * FROM games WHERE private = 0";
+
+         connection = dataSource.getConnection();
+
+         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+         if(!(auth instanceof AnonymousAuthenticationToken))
+         {
+            String username = auth.getName();
+
+            ps = connection.prepareStatement(getPlayers);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            while(rs.next())
+            {
+               int gid = rs.getInt("gid");
+               userGids.add(gid);
+               PreparedStatement psGames = null;
+               ResultSet rsGames = null;
+               try
+               {
+                  psGames = connection.prepareStatement(getGameNames);
+                  psGames.setInt(1, gid);
+                  rsGames = psGames.executeQuery();
+                  rsGames.next();
+                  String gameName = rsGames.getString("title");
+                  userGames.add(gameName);
+                  psGames.close();
+                  psGames = null;
+                  rsGames.close();
+                  rsGames = null;
+               }
+               catch(Exception e)
+               {
+                  if(psGames != null)
+                  {
+                     psGames.close();
+                  }
+                  if(rsGames != null)
+                  {
+                     rsGames.close();
+                  }
+               }
+            }
+            ps.close();
+            ps = null;
+            rs.close();
+            rs = null;
+         }
+         else
+         {
+            userGames.add("Please log in to see your games");
+         }
+         
+         ps = connection.prepareStatement(getPublicGames);
+         rs = ps.executeQuery();
+         while(rs.next())
+         {
+            int gid = rs.getInt("gid");
+            if(!userGids.contains(gid))
+            {
+               String gameName = rs.getString("title");
+               publicGames.add(gameName);
+            }
+         }
+         ps.close();
+         ps = null;
+         rs.close();
+         rs = null;
+
+         connection.close();
+         connection = null;
+      }
+      catch(Exception e)
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception ex)
+         {
+            // Nothing we can do
+         }
+      }
+      
+      if(userGames.isEmpty())
+      {
+         userGames.add("You are current not in any games");
+      }
+      if(publicGames.isEmpty())
+      {
+         publicGames.add("There are no public games available");
+      }
+
+      model.addObject("userGames", userGames);
       model.addObject("publicGames", publicGames);
 
       model.setViewName("games");
