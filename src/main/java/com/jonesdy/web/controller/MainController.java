@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jonesdy.model.Game;
+
 @Controller
 public class MainController
 {
@@ -205,8 +207,8 @@ public class MainController
    {
       ModelAndView model = new ModelAndView();
 
-      ArrayList<String> userGames = new ArrayList<String>();
-      ArrayList<String> publicGames = new ArrayList<String>();
+      ArrayList<Game> userGames = new ArrayList<Game>();
+      ArrayList<Game> publicGames = new ArrayList<Game>();
       ArrayList<Integer> userGids = new ArrayList<Integer>();
 
       final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
@@ -245,7 +247,7 @@ public class MainController
                   rsGames = psGames.executeQuery();
                   rsGames.next();
                   String gameName = rsGames.getString("title");
-                  userGames.add(gameName);
+                  userGames.add(new Game(gid, gameName));
                   psGames.close();
                   psGames = null;
                   rsGames.close();
@@ -270,7 +272,7 @@ public class MainController
          }
          else
          {
-            userGames.add("Please log in to see your games");
+            userGames.add(new Game(0, "Please log in to see your games"));
          }
          
          ps = connection.prepareStatement(getPublicGames);
@@ -281,7 +283,7 @@ public class MainController
             if(!userGids.contains(gid))
             {
                String gameName = rs.getString("title");
-               publicGames.add(gameName);
+               publicGames.add(new Game(gid, gameName));
             }
          }
          ps.close();
@@ -317,11 +319,11 @@ public class MainController
       
       if(userGames.isEmpty())
       {
-         userGames.add("You are current not in any games");
+         userGames.add(new Game(0, "You are current not in any games"));
       }
       if(publicGames.isEmpty())
       {
-         publicGames.add("There are no public games available");
+         publicGames.add(new Game(0, "There are no public games available"));
       }
 
       model.addObject("userGames", userGames);
