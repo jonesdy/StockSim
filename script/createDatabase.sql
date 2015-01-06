@@ -22,7 +22,7 @@ CREATE TABLE user_roles (
 CREATE TABLE games (
    gid INT NOT NULL AUTO_INCREMENT,
    title VARCHAR(60) NOT NULL,
-   starting_money INT NOT NULL,
+   startingMoney INT NOT NULL,
    private BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (gid));
    
@@ -31,14 +31,14 @@ CREATE TABLE players (
    username VARCHAR(60) NOT NULL,
    gid INT NOT NULL,
    balance INT NOT NULL,
-   is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+   isAdmin BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (pid),
    CONSTRAINT fk_username_players FOREIGN KEY (username) REFERENCES users (username),
    CONSTRAINT fk_gid FOREIGN KEY (gid) REFERENCES games (gid));
    
 CREATE TABLE stocks (
    sid INT NOT NULL AUTO_INCREMENT,
-   ticker_symbol VARCHAR(10) NOT NULL,
+   tickerSymbol VARCHAR(10) NOT NULL,
    pid INT NOT NULL,
    count INT NOT NULL,
    PRIMARY KEY (sid),

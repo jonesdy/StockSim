@@ -50,7 +50,7 @@ public class DatabaseHelper
          {
             DbUser user = new DbUser();
             user.setUsername(username);
-            user.setPasswordHash(rs.getString("passwordHash"));
+            user.setPasswordHash(rs.getString("password"));
             user.setEmail(rs.getString("email"));
             user.setConfirmCode(rs.getString("confirmCode"));
             user.setEnabled(rs.getBoolean("enabled"));
