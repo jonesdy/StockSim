@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.jonesdy.web.model.WebGame;
+import com.jonesdy.database.DatabaseHelper;
+import com.jonesdy.database.model.*;
 
 @Controller
 public class MainController
@@ -64,48 +66,7 @@ public class MainController
    @RequestMapping(value = "/isUsernameAvailable", method = RequestMethod.GET, produces="application/json")
    public @ResponseBody boolean isUsernameAvailable(@RequestParam(value = "username", required = true) String username)
    {
-      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-      dsLookup.setResourceRef(true);
-      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
-      Connection connection = null;
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      
-      try
-      {
-         final String checkUsername = "SELECT * FROM users WHERE username = ?";
-         connection = dataSource.getConnection();
-         ps = connection.prepareStatement(checkUsername);
-         ps.setString(1, username);
-         rs = ps.executeQuery();
-         return !rs.next();
-      }
-      catch(Exception e)
-      {
-         return false;
-      }
-      finally
-      {
-         try
-         {
-            if(ps != null)
-            {
-               ps.close();
-            }
-            if(rs != null)
-            {
-               rs.close();
-            }
-            if(connection != null)
-            {
-               connection.close();
-            }
-         }
-         catch(Exception e)
-         {
-            // Nothing we can really do here
-         }
-      }
+      return DatabaseHelper.getDbUserByUsername(username) == null;
    }
    
    @RequestMapping(value = "/confirm", method = RequestMethod.GET)
