@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.jonesdy.model.User;
+import com.jonesdy.web.model.WebUser;
 
 @Controller
 @RequestMapping(value = "/register")
@@ -31,13 +31,13 @@ public class RegisterController
    public ModelAndView viewRegistration()
    {
       ModelAndView model = new ModelAndView();
-      model.addObject("user", new User());
+      model.addObject("user", new WebUser());
       model.setViewName("registration");
       return model;
    }
    
    @RequestMapping(method = RequestMethod.POST)
-   public ModelAndView processRegistration(@ModelAttribute User user)
+   public ModelAndView processRegistration(@ModelAttribute WebUser user)
    {
       ModelAndView model = new ModelAndView();
       
@@ -100,7 +100,7 @@ public class RegisterController
       return model;
    }
    
-   private String registerUser(User user)
+   private String registerUser(WebUser user)
    {
       final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
       dsLookup.setResourceRef(true);
@@ -184,7 +184,7 @@ public class RegisterController
       }
       catch(Exception e)
       {
-         removeUser(user.getUsername());
+         removeUser(user.getUsername());   // Comment out for testing
          return "Failed with exception: " + e.toString();
       }
       finally

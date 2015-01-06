@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.jonesdy.model.Game;
+import com.jonesdy.web.model.WebGame;
 
 @Controller
 public class MainController
@@ -207,8 +207,8 @@ public class MainController
    {
       ModelAndView model = new ModelAndView();
 
-      ArrayList<Game> userGames = new ArrayList<Game>();
-      ArrayList<Game> publicGames = new ArrayList<Game>();
+      ArrayList<WebGame> userGames = new ArrayList<WebGame>();
+      ArrayList<WebGame> publicGames = new ArrayList<WebGame>();
       ArrayList<Integer> userGids = new ArrayList<Integer>();
 
       final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
@@ -247,7 +247,7 @@ public class MainController
                   rsGames = psGames.executeQuery();
                   rsGames.next();
                   String gameName = rsGames.getString("title");
-                  userGames.add(new Game(gid, gameName));
+                  userGames.add(new WebGame(gid, gameName));
                   psGames.close();
                   psGames = null;
                   rsGames.close();
@@ -272,7 +272,7 @@ public class MainController
          }
          else
          {
-            userGames.add(new Game(0, "Please log in to see your games"));
+            userGames.add(new WebGame(0, "Please log in to see your games"));
          }
          
          ps = connection.prepareStatement(getPublicGames);
@@ -283,7 +283,7 @@ public class MainController
             if(!userGids.contains(gid))
             {
                String gameName = rs.getString("title");
-               publicGames.add(new Game(gid, gameName));
+               publicGames.add(new WebGame(gid, gameName));
             }
          }
          ps.close();
@@ -295,6 +295,9 @@ public class MainController
          connection = null;
       }
       catch(Exception e)
+      {
+      }
+      finally
       {
          try
          {
@@ -319,11 +322,11 @@ public class MainController
       
       if(userGames.isEmpty())
       {
-         userGames.add(new Game(0, "You are current not in any games"));
+         userGames.add(new WebGame(0, "You are current not in any games"));
       }
       if(publicGames.isEmpty())
       {
-         publicGames.add(new Game(0, "There are no public games available"));
+         publicGames.add(new WebGame(0, "There are no public games available"));
       }
 
       model.addObject("userGames", userGames);
@@ -331,6 +334,59 @@ public class MainController
 
       model.setViewName("games");
 
+      return model;
+   }
+
+   @RequestMapping(value = "/game", method = RequestMethod.GET)
+   public ModelAndView gamePage(@RequestParam(value = "gid", required = true) String gid)
+   {
+      ModelAndView model = new ModelAndView();
+
+      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+      dsLookup.setResourceRef(true);
+      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         final String getGame = "SELECT * FROM games WHERE gid = ?";
+         int gidInt = Integer.parseInt(gid);
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(getGame);
+         ps.setInt(1, gidInt);
+         rs = ps.executeQuery();
+         if(rs.next())
+         {
+         }
+      }
+      catch(Exception e)
+      {
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+         }
+      }
+
+      model.setViewName("game");
       return model;
    }
 }

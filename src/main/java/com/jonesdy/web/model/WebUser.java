@@ -1,13 +1,13 @@
-package com.jonesdy.model;
+package com.jonesdy.web.model;
 
-public class User
+public class WebUser
 {
    private String username;
    private String email;
    private String emailConfirm;
    private String password;
    private String passwordConfirm;
-   
+
    public String getUsername()
    {
       return username;

@@ -8,20 +8,8 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<title>Games Page</title>
+<title>Game Page</title>
 </head>
 <body>
-   <div th:replace="navbar"></div>
-   <div class="container">
-      <h3>Your Games:</h3>
-      <div class="list-group">
-         <a href="game.html" th:each="game : ${userGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /></a>
-      </div>
-
-      <h3>Public Games:</h3>
-      <div class="list-group">
-         <a href="game.html" th:each="game : ${publicGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /></a>
-      </div>
-   </div>
 </body>
 </html>

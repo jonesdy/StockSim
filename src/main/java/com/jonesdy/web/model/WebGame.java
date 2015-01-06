@@ -1,11 +1,11 @@
-package com.jonesdy.model;
+package com.jonesdy.web.model;
 
-public class Game
+public class WebGame
 {
    private int gid;
    private String title;
 
-   public Game(int g, String t)
+   public WebGame(int g, String t)
    {
       gid = g;
       title = t;
