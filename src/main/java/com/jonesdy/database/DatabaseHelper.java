@@ -14,6 +14,7 @@ public class DatabaseHelper
 {
    public static final String GET_USER_BY_USERNAME = "SELECT * FROM users WHERE username = ?";
    public static final String GET_USER_BY_CONFIRM_CODE = "SELECT * FROM users WHERE confirmCode = ?";
+   public static final String SET_CONFIRMED_BY_CONFIRM_CODE = "UPDATE users SET confirmed = true WHERE confirmCode = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -117,6 +118,65 @@ public class DatabaseHelper
       catch(Exception e)
       {
          return null;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static boolean confirmUserByConfirmCode(String confirmCode)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(GET_USER_BY_CONFIRM_CODE);
+         ps.setString(1, confirmCode);
+         rs = ps.executeQuery();
+         if(!rs.next())
+         {
+            return false;
+         }
+         else if(rs.getBoolean("confirmed"))
+         {
+            return false;
+         }
+         else
+         {
+            ps.close();
+            ps = null;
+
+            ps = connection.prepareStatement(SET_CONFIRMED_BY_CONFIRM_CODE);
+            ps.setString(1, confirmCode);
+            ps.executeQuery();
+            return true;
+         }
+      }
+      catch(Exception e)
+      {
+         return false;
       }
       finally
       {
