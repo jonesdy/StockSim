@@ -23,7 +23,7 @@ CREATE TABLE games (
    gid INT NOT NULL AUTO_INCREMENT,
    title VARCHAR(60) NOT NULL,
    startingMoney INT NOT NULL,
-   private BOOLEAN NOT NULL DEFAULT FALSE,
+   privateGame BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (gid));
    
 CREATE TABLE players (

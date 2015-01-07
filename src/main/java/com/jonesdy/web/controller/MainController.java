@@ -21,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.jonesdy.web.model.WebGame;
 import com.jonesdy.database.DatabaseHelper;
+import com.jonesdy.database.model.DbGame;
+import com.jonesdy.database.model.DbPlayer;
 
 @Controller
 public class MainController
@@ -111,119 +113,36 @@ public class MainController
       ArrayList<WebGame> userGames = new ArrayList<WebGame>();
       ArrayList<WebGame> publicGames = new ArrayList<WebGame>();
       ArrayList<Integer> userGids = new ArrayList<Integer>();
-
-      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-      dsLookup.setResourceRef(true);
-      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
-      Connection connection = null;
-      PreparedStatement ps = null;
-      ResultSet rs = null;
       
-      try
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      if(auth instanceof AnonymousAuthenticationToken)
       {
-         final String getPlayers = "SELECT gid FROM players WHERE username = ?";
-         final String getGameNames = "SELECT title FROM games WHERE gid = ?";
-         final String getPublicGames = "SELECT * FROM games WHERE private = 0";
-
-         connection = dataSource.getConnection();
-
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-         if(!(auth instanceof AnonymousAuthenticationToken))
-         {
-            String username = auth.getName();
-
-            ps = connection.prepareStatement(getPlayers);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-            while(rs.next())
-            {
-               int gid = rs.getInt("gid");
-               userGids.add(gid);
-               PreparedStatement psGames = null;
-               ResultSet rsGames = null;
-               try
-               {
-                  psGames = connection.prepareStatement(getGameNames);
-                  psGames.setInt(1, gid);
-                  rsGames = psGames.executeQuery();
-                  rsGames.next();
-                  String gameName = rsGames.getString("title");
-                  userGames.add(new WebGame(gid, gameName));
-                  psGames.close();
-                  psGames = null;
-                  rsGames.close();
-                  rsGames = null;
-               }
-               catch(Exception e)
-               {
-                  if(psGames != null)
-                  {
-                     psGames.close();
-                  }
-                  if(rsGames != null)
-                  {
-                     rsGames.close();
-                  }
-               }
-            }
-            ps.close();
-            ps = null;
-            rs.close();
-            rs = null;
-         }
-         else
-         {
-            userGames.add(new WebGame(0, "Please log in to see your games"));
-         }
-         
-         ps = connection.prepareStatement(getPublicGames);
-         rs = ps.executeQuery();
-         while(rs.next())
-         {
-            int gid = rs.getInt("gid");
-            if(!userGids.contains(gid))
-            {
-               String gameName = rs.getString("title");
-               publicGames.add(new WebGame(gid, gameName));
-            }
-         }
-         ps.close();
-         ps = null;
-         rs.close();
-         rs = null;
-
-         connection.close();
-         connection = null;
+         userGames.add(new WebGame(0, "Please log in to see your games"));
       }
-      catch(Exception e)
+      else
       {
-      }
-      finally
-      {
-         try
+         String username = auth.getName();
+         ArrayList<DbPlayer> dbPlayers = DatabaseHelper.getDbPlayersByUsername(username);
+         for(DbPlayer dbPlayer : dbPlayers)
          {
-            if(ps != null)
-            {
-               ps.close();
-            }
-            if(rs != null)
-            {
-               rs.close();
-            }
-            if(connection != null)
-            {
-               connection.close();
-            }
+            userGids.add(dbPlayer.getGid());
+            DbGame dbGame = DatabaseHelper.getDbGameByGid(dbPlayer.getGid());
+            userGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle()));
          }
-         catch(Exception ex)
+      }
+
+      ArrayList<DbGame> publicDbGames = DatabaseHelper.getPublicDbGames();
+      for(DbGame dbGame : publicDbGames)
+      {
+         if(!userGids.contains(dbGame.getGid()))
          {
-            // Nothing we can do
+            publicGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle()));
          }
       }
       
       if(userGames.isEmpty())
       {
-         userGames.add(new WebGame(0, "You are current not in any games"));
+         userGames.add(new WebGame(0, "You are currently not in any games"));
       }
       if(publicGames.isEmpty())
       {
