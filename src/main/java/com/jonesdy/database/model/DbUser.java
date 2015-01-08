@@ -3,7 +3,7 @@ package com.jonesdy.database.model;
 public class DbUser
 {
    private String username;
-   private String passwordHash;
+   private String password;
    private String email;
    private String confirmCode;
    private boolean enabled;
@@ -12,17 +12,17 @@ public class DbUser
    public DbUser()
    {
       username = null;
-      passwordHash = null;
+      password = null;
       email = null;
       confirmCode = null;
       enabled = true;
       confirmed = false;
    }
 
-   public DbUser(String u, String ph, String e, String cc, boolean en, boolean c)
+   public DbUser(String u, String p, String e, String cc, boolean en, boolean c)
    {
       username = u;
-      passwordHash = ph;
+      password = p;
       email = e;
       confirmCode = cc;
       enabled = en;
@@ -39,14 +39,14 @@ public class DbUser
       username = u;
    }
 
-   public String getPasswordHash()
+   public String getPassword()
    {
-      return passwordHash;
+      return password;
    }
 
-   public void setPasswordHash(String ph)
+   public void setPassword(String p)
    {
-      passwordHash = ph;
+      password = p;
    }
 
    public String getEmail()

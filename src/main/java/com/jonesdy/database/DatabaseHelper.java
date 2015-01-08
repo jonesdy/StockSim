@@ -19,6 +19,10 @@ public class DatabaseHelper
    public static final String GET_PLAYERS_BY_USERNAME = "SELECT * FROM players WHERE username = ?";
    public static final String GET_GAME_BY_GID = "SELECT * FROM games WHERE gid = ?";
    public static final String GET_PUBLIC_GAMES = "SELECT * FROM games WHERE privateGame = 0";
+   public static final String ADD_USER = "INSERT INTO users (username, password, email, confirmCode, enabled, confirmed) VALUES (?, ?, ?, ?, ?, ?)";
+   public static final String ADD_USER_ROLE = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
+   public static final String REMOVE_USER_ROLES_BY_USERNAME = "DELETE FROM user_roles WHERE username = ?";
+   public static final String REMOVE_USER_BY_USERNAME = "DELETE FROM users WHERE username = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -55,7 +59,7 @@ public class DatabaseHelper
          {
             DbUser user = new DbUser();
             user.setUsername(username);
-            user.setPasswordHash(rs.getString("password"));
+            user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
             user.setConfirmCode(rs.getString("confirmCode"));
             user.setEnabled(rs.getBoolean("enabled"));
@@ -111,7 +115,7 @@ public class DatabaseHelper
 
          DbUser user = new DbUser();
          user.setUsername(confirmCode);
-         user.setPasswordHash(rs.getString("passwordHash"));
+         user.setPassword(rs.getString("password"));
          user.setEmail(rs.getString("email"));
          user.setConfirmCode(rs.getString("confirmCode"));
          user.setEnabled(rs.getBoolean("enabled"));
@@ -349,6 +353,106 @@ public class DatabaseHelper
             if(rs != null)
             {
                rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+   
+   public static boolean addNewUserAndRole(DbUser user)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         // Add the user first
+         ps = connection.prepareStatement(ADD_USER);
+         ps.setString(1, user.getUsername());
+         ps.setString(2, user.getPassword());
+         ps.setString(3, user.getEmail());
+         ps.setString(4, user.getConfirmCode());
+         ps.setBoolean(5, user.getEnabled());
+         ps.setBoolean(6, user.getConfirmed());
+         ps.executeUpdate();
+         ps.close();
+         ps = null;
+
+         // Then add the user role
+         ps = connection.prepareStatement(ADD_USER_ROLE);
+         ps.setString(1, user.getUsername());
+         ps.setString(2, "ROLE_USER");
+         ps.executeUpdate();
+
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static boolean removeUserAndRolesByUsername(String username)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         // Remove the user roles first
+         ps = connection.prepareStatement(REMOVE_USER_ROLES_BY_USERNAME);
+         ps.setString(1, username);
+         ps.executeUpdate();
+         ps.close();
+         ps = null;
+
+         // Then remove the user
+         ps = connection.prepareStatement(REMOVE_USER_BY_USERNAME);
+         ps.setString(1, username);
+         ps.executeUpdate();
+         
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
             }
             if(connection != null)
             {

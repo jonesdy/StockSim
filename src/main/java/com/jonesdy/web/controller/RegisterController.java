@@ -1,8 +1,5 @@
 package com.jonesdy.web.controller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.Random;
 
@@ -11,9 +8,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.sql.DataSource;
 
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jonesdy.database.DatabaseHelper;
+import com.jonesdy.database.model.DbUser;
 import com.jonesdy.web.model.WebUser;
 
 @Controller
@@ -102,76 +99,40 @@ public class RegisterController
    
    private String registerUser(WebUser user)
    {
-      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-      dsLookup.setResourceRef(true);
-      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
-      Connection connection = null;
-      PreparedStatement ps = null;
-      ResultSet rs = null;
       String confirmCode = generateConfirmCode();
+
+      // Make sure the user doesn't already exist
+      if(DatabaseHelper.getDbUserByUsername(user.getUsername()) != null)
+      {
+         return "User Name already exists.";
+      }
+
+      // Make sure our confirm code is unique
+      while(DatabaseHelper.getDbUserByConfirmCode(confirmCode) != null)
+      {
+         confirmCode = generateConfirmCode();
+      }
+         
+      // Time to add the user
+      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      String passwordHash = passwordEncoder.encode(user.getPassword());
+
+      DbUser dbUser = new DbUser();
+      dbUser.setUsername(user.getUsername());
+      dbUser.setPassword(passwordHash);
+      dbUser.setEmail(user.getEmail());
+      dbUser.setConfirmCode(confirmCode);
+      dbUser.setEnabled(true);
+      dbUser.setConfirmed(false);
+      if(!DatabaseHelper.addNewUserAndRole(dbUser))
+      {
+         DatabaseHelper.removeUserAndRolesByUsername(dbUser.getUsername());  // Comment out for testing
+         return "Error while adding new user.";
+      }
+               
+      // Send the email
       try
       {
-         final String checkUsername = "SELECT * FROM users WHERE username = ?";
-         final String addUser = "INSERT INTO users (username, password, email, confirmCode, enabled, confirmed) VALUES (?, ?, ?, ?, ?, ?)";
-         final String addUserRole = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
-         final String checkConfirmCode = "SELECT * FROM users WHERE confirmCode = ?";
-         
-         connection = dataSource.getConnection();         
-         
-         ps = connection.prepareStatement(checkUsername);
-         ps.setString(1, user.getUsername());
-         rs = ps.executeQuery();
-         if(rs.next())
-         {
-            return "User Name already exists.";
-         }
-         rs.close();
-         ps.close();
-         ps = null;
-         rs = null;
-         
-         // Generate a confirm code and make sure it is unique
-         boolean unique = false;
-         while(!unique)
-         {
-            ps = connection.prepareStatement(checkConfirmCode);
-            ps.setString(1, confirmCode);
-            rs = ps.executeQuery();
-            unique = !rs.next();
-            rs.close();
-            ps.close();
-            ps = null;
-            rs = null;
-            
-            if(!unique)
-            {
-               confirmCode = generateConfirmCode();
-            }
-         }
-         
-         // Time to add the user
-         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-         String passwordHash = passwordEncoder.encode(user.getPassword());
-         ps = connection.prepareStatement(addUser);
-         ps.setString(1, user.getUsername());
-         ps.setString(2, passwordHash);
-         ps.setString(3, user.getEmail());
-         ps.setString(4, confirmCode);
-         ps.setBoolean(5, true);
-         ps.setBoolean(6, false);
-         ps.executeUpdate();
-         ps.close();
-         ps = null;
-         
-         // Need to add user role as well
-         ps = connection.prepareStatement(addUserRole);
-         ps.setString(1, user.getUsername());
-         ps.setString(2, "ROLE_USER");
-         ps.executeUpdate();
-         ps.close();
-         ps = null;
-         
-         // Send the email
          Properties properties = System.getProperties();
          properties.setProperty("mail.smtp.host", "openstocksim.com");
          Session session = Session.getDefaultInstance(properties);
@@ -184,31 +145,11 @@ public class RegisterController
       }
       catch(Exception e)
       {
-         removeUser(user.getUsername());   // Comment out for testing
-         return "Failed with exception: " + e.toString();
+         DatabaseHelper.removeUserAndRolesByUsername(dbUser.getUsername());  // Comment out for testing
+         return "Unable to send confirmation email.";
       }
-      finally
-      {
-         try
-         {
-            if(ps != null)
-            {
-               ps.close();
-            }
-            if(rs != null)
-            {
-               rs.close();
-            }
-            if(connection != null)
-            {
-               connection.close();
-            }
-         }
-         catch(Exception e)
-         {
-            return "Failed to close connection to database.";
-         }
-      }
+
+      // No errors
       return null;
    }
    
@@ -223,56 +164,5 @@ public class RegisterController
          sb.append(letters.charAt(random.nextInt(letters.length())));
       }
       return sb.toString();
-   }
-   
-   private static void removeUser(String username)
-   {
-      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-      dsLookup.setResourceRef(true);
-      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
-      Connection connection = null;
-      PreparedStatement ps = null;
-      
-      try
-      {
-         final String removeUserRole = "DELETE FROM user_roles WHERE username = ?";
-         final String removeUser = "DELETE FROM users WHERE username = ?";
-         connection = dataSource.getConnection();
-         ps = connection.prepareStatement(removeUserRole);
-         ps.setString(1, username);
-         ps.executeQuery();
-         
-         ps.close();
-         ps = null;
-         
-         ps = connection.prepareStatement(removeUser);
-         ps.setString(1, username);
-         ps.executeQuery();
-         
-         ps.close();
-         ps = null;
-      }
-      catch(Exception e)
-      {
-         // Nothing we can do
-      }
-      finally
-      {
-         try
-         {
-            if(ps != null)
-            {
-               ps.close();
-            }
-            if(connection != null)
-            {
-               connection.close();
-            }
-         }
-         catch(Exception e)
-         {
-            // Nothing we can do
-         }
-      }
    }
 }
