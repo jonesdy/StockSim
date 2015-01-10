@@ -162,48 +162,12 @@ public class MainController
    {
       ModelAndView model = new ModelAndView();
 
-      final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-      dsLookup.setResourceRef(true);
-      DataSource dataSource = dsLookup.getDataSource("java:comp/env/jdbc/stocksimdb");
-      Connection connection = null;
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-
       try
       {
-         final String getGame = "SELECT * FROM games WHERE gid = ?";
-         int gidInt = Integer.parseInt(gid);
-         connection = dataSource.getConnection();
-         ps = connection.prepareStatement(getGame);
-         ps.setInt(1, gidInt);
-         rs = ps.executeQuery();
-         if(rs.next())
-         {
-         }
+         DbGame game = DatabaseHelper.getDbGameByGid(Integer.parseInt(gid));
       }
       catch(Exception e)
       {
-      }
-      finally
-      {
-         try
-         {
-            if(ps != null)
-            {
-               ps.close();
-            }
-            if(rs != null)
-            {
-               rs.close();
-            }
-            if(connection != null)
-            {
-               connection.close();
-            }
-         }
-         catch(Exception e)
-         {
-         }
       }
 
       model.setViewName("game");
