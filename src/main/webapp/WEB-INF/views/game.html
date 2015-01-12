@@ -11,5 +11,12 @@
 <title>Game Page</title>
 </head>
 <body>
+   <div th:replace="navbar"></div>
+   <div th:if="${game}" class="container">
+      <h1>Game Title: <span th:text="${game.title}" /></h1>
+      <h1>Starting Money: <span th:text="${game.startingMoney}" /></h1>
+      <h1>Private Game?: <span th:text="${game.privateGame}" /></h1>
+   </div>
+   <div th:unless="${game}" class="container"><div class="alert alert-danger">This game is not valid or is a private game that you are not in.</div></div>
 </body>
 </html>

@@ -23,6 +23,7 @@ public class DatabaseHelper
    public static final String ADD_USER_ROLE = "INSERT INTO user_roles (username, role) VALUES (?, ?)";
    public static final String REMOVE_USER_ROLES_BY_USERNAME = "DELETE FROM user_roles WHERE username = ?";
    public static final String REMOVE_USER_BY_USERNAME = "DELETE FROM users WHERE username = ?";
+   public static final String GET_PLAYER_BY_USERNAME_AND_GID = "SELECT * FROM players WHERE username = ? AND gid = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -464,5 +465,50 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
+
+   public static boolean isUserInGame(String username, int gid)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         ps = connection.prepareStatement(GET_PLAYER_BY_USERNAME_AND_GID);
+         ps.setString(1, username);
+         ps.setInt(2, gid);
+         rs = ps.executeQuery();
+         return rs.next();
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+
    }
 }

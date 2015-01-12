@@ -1,13 +1,7 @@
 package com.jonesdy.web.controller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -165,6 +159,24 @@ public class MainController
       try
       {
          DbGame game = DatabaseHelper.getDbGameByGid(Integer.parseInt(gid));
+         if(!game.getPrivateGame())
+         {
+            // Public game
+            model.addObject("game", game);
+         }
+         else
+         {
+            // Private game, check to make sure this user is in this game
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if(!(auth instanceof AnonymousAuthenticationToken))
+            {
+               UserDetails userDetails = (UserDetails)auth.getPrincipal();
+               if(DatabaseHelper.isUserInGame(userDetails.getUsername(), Integer.parseInt(gid)))
+               {
+                  model.addObject("game", game);
+               }
+            }
+         }
       }
       catch(Exception e)
       {
