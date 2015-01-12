@@ -24,6 +24,7 @@ public class DatabaseHelper
    public static final String REMOVE_USER_ROLES_BY_USERNAME = "DELETE FROM user_roles WHERE username = ?";
    public static final String REMOVE_USER_BY_USERNAME = "DELETE FROM users WHERE username = ?";
    public static final String GET_PLAYER_BY_USERNAME_AND_GID = "SELECT * FROM players WHERE username = ? AND gid = ?";
+   public static final String GET_NUMBER_OF_PLAYERS_FROM_GAME_BY_GID = "SELECT COUNT(gid) AS playerCount FROM players WHERE gid = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -509,6 +510,52 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
 
+   public static int getPlayerCountFromGameByGid(int gid)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         ps = connection.prepareStatement(GET_NUMBER_OF_PLAYERS_FROM_GAME_BY_GID);
+         ps.setInt(1, gid);
+         rs = ps.executeQuery();
+         if(!rs.next())
+         {
+            return -1;
+         }
+         return rs.getInt("playerCount");
+      }
+      catch(Exception e)
+      {
+         return -1;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
    }
 }

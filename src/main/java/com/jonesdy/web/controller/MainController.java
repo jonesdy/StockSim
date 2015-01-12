@@ -109,11 +109,7 @@ public class MainController
       ArrayList<Integer> userGids = new ArrayList<Integer>();
       
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      if(auth instanceof AnonymousAuthenticationToken)
-      {
-         userGames.add(new WebGame(0, "Please log in to see your games"));
-      }
-      else
+      if(!(auth instanceof AnonymousAuthenticationToken))
       {
          String username = auth.getName();
          ArrayList<DbPlayer> dbPlayers = DatabaseHelper.getDbPlayersByUsername(username);
@@ -121,7 +117,8 @@ public class MainController
          {
             userGids.add(dbPlayer.getGid());
             DbGame dbGame = DatabaseHelper.getDbGameByGid(dbPlayer.getGid());
-            userGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle()));
+            userGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle(),
+               DatabaseHelper.getPlayerCountFromGameByGid(dbGame.getGid())));
          }
       }
 
@@ -130,21 +127,19 @@ public class MainController
       {
          if(!userGids.contains(dbGame.getGid()))
          {
-            publicGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle()));
+            publicGames.add(new WebGame(dbGame.getGid(), dbGame.getTitle(),
+               DatabaseHelper.getPlayerCountFromGameByGid(dbGame.getGid())));
          }
       }
       
-      if(userGames.isEmpty())
+      if(!userGames.isEmpty())
       {
-         userGames.add(new WebGame(0, "You are currently not in any games"));
+         model.addObject("userGames", userGames);
       }
-      if(publicGames.isEmpty())
+      if(!publicGames.isEmpty())
       {
-         publicGames.add(new WebGame(0, "There are no public games available"));
+         model.addObject("publicGames", publicGames);
       }
-
-      model.addObject("userGames", userGames);
-      model.addObject("publicGames", publicGames);
 
       model.setViewName("games");
 

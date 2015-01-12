@@ -4,11 +4,13 @@ public class WebGame
 {
    private int gid;
    private String title;
+   private int playerCount;
 
-   public WebGame(int g, String t)
+   public WebGame(int g, String t, int pc)
    {
       gid = g;
       title = t;
+      playerCount = pc;
    }
 
    public int getGid()
@@ -29,5 +31,15 @@ public class WebGame
    public void setTitle(String t)
    {
       title = t;
+   }
+
+   public int getPlayerCount()
+   {
+      return playerCount;
+   }
+
+   public void setPlayerCount(int pc)
+   {
+      playerCount = pc;
    }
 }

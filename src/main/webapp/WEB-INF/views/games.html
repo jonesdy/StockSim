@@ -14,14 +14,22 @@
    <div th:replace="navbar"></div>
    <div class="container">
       <h3>Your Games:</h3>
-      <div class="list-group">
-         <a href="game.html" th:each="game : ${userGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /></a>
+      <div class="list-group" th:if="${userGames}">
+         <a href="game.html" th:each="game : ${userGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /><span class="badge" th:text="${game.playerCount}" /></a>
       </div>
+      <ul class="list-group" th:unless="${userGames}">
+         <li class="list-group-item">You are not in any games, or not logged in</li>
+      </ul>
 
       <h3>Public Games:</h3>
-      <div class="list-group">
-         <a href="game.html" th:each="game : ${publicGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /></a>
+      <div class="list-group" th:if="${publicGames}">
+         <a href="game.html" th:each="game : ${publicGames}" th:href="@{/game(gid=${game.gid})}" class="list-group-item"><span th:text="${game.title}" /><span class="badge" th:text="${game.playerCount}" /></a>
       </div>
+      <ul class="list-group" th:unless="${publicGames}">
+         <li class="list-group-item">There are no public games available</li>
+      </ul>
+
+      <h4><a href="newGame.html">Start your own game here</a></h4>
    </div>
 </body>
 </html>
