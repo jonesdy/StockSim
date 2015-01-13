@@ -1,6 +1,6 @@
 package com.jonesdy.web.model;
 
-public class WebUser
+public class FormUser
 {
    private String username;
    private String email;

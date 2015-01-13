@@ -25,8 +25,6 @@ function initializeForm()
    document.getElementById("passwordErrorDiv").style.display = "none";
    document.getElementById("passwordConfirmError").innerHTML = "";
    document.getElementById("passwordConfirmErrorDiv").style.display = "none";
-   
-   //document.getElementById("submitButton").disabled = true;
 }
 
 function validateUsername()
@@ -291,8 +289,6 @@ function disablePasswordConfirmPrestine()
 
 function validateForm()
 {
-   var submitButtonElement = document.getElementById("submitButton");
-   
    // Do this to make sure every function is called
    // (doing it in one line in the if statement short circuits)
    var valid = validateUsername();
@@ -300,15 +296,6 @@ function validateForm()
    valid &= validateEmailConfirm();
    valid &= validatePassword();
    valid &= validatePasswordConfirm();
-   
-   /*if(valid)
-   {
-      submitButtonElement.disabled = false;
-   }
-   else
-   {
-      submitButtonElement.disabled = true;
-   }*/
    
    if(!valid)
    {

@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.jonesdy.database.DatabaseHelper;
 import com.jonesdy.database.model.DbUser;
-import com.jonesdy.web.model.WebUser;
+import com.jonesdy.web.model.FormUser;
 
 @Controller
 @RequestMapping(value = "/register")
@@ -28,13 +28,13 @@ public class RegisterController
    public ModelAndView viewRegistration()
    {
       ModelAndView model = new ModelAndView();
-      model.addObject("user", new WebUser());
+      model.addObject("user", new FormUser());
       model.setViewName("registration");
       return model;
    }
    
    @RequestMapping(method = RequestMethod.POST)
-   public ModelAndView processRegistration(@ModelAttribute WebUser user)
+   public ModelAndView processRegistration(@ModelAttribute FormUser user)
    {
       ModelAndView model = new ModelAndView();
       
@@ -97,7 +97,7 @@ public class RegisterController
       return model;
    }
    
-   private String registerUser(WebUser user)
+   private String registerUser(FormUser user)
    {
       String confirmCode = generateConfirmCode();
 

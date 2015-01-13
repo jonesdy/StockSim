@@ -175,6 +175,7 @@ public class MainController
       }
       catch(Exception e)
       {
+         // Game is not valid, handled in the page
       }
 
       model.setViewName("game");
