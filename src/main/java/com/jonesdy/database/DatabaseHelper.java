@@ -289,6 +289,7 @@ public class DatabaseHelper
          game.setTitle(rs.getString("title"));
          game.setStartingMoney(rs.getInt("startingMoney"));
          game.setPrivateGame(rs.getBoolean("privateGame"));
+         game.setStartTimestamp(rs.getLong("startTimestamp"));
          return game;
       }
       catch(Exception e)
@@ -339,6 +340,7 @@ public class DatabaseHelper
             game.setTitle(rs.getString("title"));
             game.setStartingMoney(rs.getInt("startingMoney"));
             game.setPrivateGame(rs.getBoolean("privateGame"));
+            game.setStartTimestamp(rs.getLong("startTimestamp"));
             games.add(game);
          }
          return games;
@@ -628,6 +630,7 @@ public class DatabaseHelper
          game.setTitle(title);
          game.setStartingMoney(rs.getInt("startingMoney"));
          game.setPrivateGame(rs.getBoolean("privateGame"));
+         game.setStartTimestamp(rs.getLong("startTimestamp"));
          return game;
       }
       catch(Exception e)
