@@ -154,19 +154,29 @@ public class MainController
       try
       {
          DbGame game = DatabaseHelper.getDbGameByGid(Integer.parseInt(gid));
+         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
          if(!game.getPrivateGame())
          {
             // Public game
             model.addObject("game", game);
+            if(!(auth instanceof AnonymousAuthenticationToken))
+            {
+               UserDetails userDetails = (UserDetails)auth.getPrincipal();
+               DbPlayer player = DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid));
+               if(player != null)
+               {
+                  model.addObject("player", player);
+               }
+            }
          }
          else
          {
             // Private game, check to make sure this user is in this game
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if(!(auth instanceof AnonymousAuthenticationToken))
             {
                UserDetails userDetails = (UserDetails)auth.getPrincipal();
-               if(DatabaseHelper.isUserInGame(userDetails.getUsername(), Integer.parseInt(gid)))
+               if(DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid)) != null)
                {
                   model.addObject("game", game);
                }
@@ -181,10 +191,68 @@ public class MainController
       model.setViewName("game");
       return model;
    }
+
    @RequestMapping(value = "/isGameTitleAvailable", method = RequestMethod.GET, produces="application/json")
    public @ResponseBody boolean isGameTitleAvailable(@RequestParam(value = "title", required = true) String title)
    {
       return DatabaseHelper.getDbGameByTitle(title) == null;
    }
 
+   @RequestMapping(value = "/joinGame", method = RequestMethod.GET)
+   public ModelAndView joinGame(@RequestParam(value = "gid", required = true) String gid)
+   {
+      ModelAndView model = new ModelAndView();
+
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      if(auth instanceof AnonymousAuthenticationToken)
+      {
+         model.addObject("error", "You are not logged in.");
+      }
+      else
+      {
+         UserDetails details = (UserDetails)auth.getPrincipal();
+         String username = details.getUsername();
+         
+         try
+         {
+            DbGame game = DatabaseHelper.getDbGameByGid(Integer.parseInt(gid));
+            if(game == null)
+            {
+               model.addObject("error", "GID provided is not valid.");
+            }
+            else if(DatabaseHelper.getDbPlayerByUsernameAndGid(username, game.getGid()) != null)
+            {
+               model.addObject("error", "You are already in this game.");
+            }
+            else if(game.getPrivateGame())
+            {
+               model.addObject("error", "Game is private");
+            }
+            else
+            {
+               DbPlayer player = new DbPlayer();
+               player.setUsername(username);
+               player.setGid(game.getGid());
+               player.setBalance(game.getStartingMoney());
+               player.setIsAdmin(false);
+
+               if(!DatabaseHelper.addNewPlayer(player))
+               {
+                  model.addObject("error", "Unable to join game.");
+               }
+               else
+               {
+                  model.addObject("msg", "Successfully joined game: " + game.getTitle());
+               }
+            }
+         }
+         catch(Exception e)
+         {
+            model.addObject("error", "GID provided is not valid.");
+         }
+      }
+
+      model.setViewName("joinGame");
+      return model;
+   }
 }

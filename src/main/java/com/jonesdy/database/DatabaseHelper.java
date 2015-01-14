@@ -473,7 +473,7 @@ public class DatabaseHelper
       }
    }
 
-   public static boolean isUserInGame(String username, int gid)
+   public static DbPlayer getDbPlayerByUsernameAndGid(String username, int gid)
    {
       Connection connection = null;
       PreparedStatement ps = null;
@@ -487,11 +487,22 @@ public class DatabaseHelper
          ps.setString(1, username);
          ps.setInt(2, gid);
          rs = ps.executeQuery();
-         return rs.next();
+         if(!rs.next())
+         {
+            return null;
+         }
+
+         DbPlayer player = new DbPlayer();
+         player.setPid(rs.getInt("pid"));
+         player.setUsername(username);
+         player.setGid(gid);
+         player.setBalance(rs.getInt("balance"));
+         player.setIsAdmin(rs.getBoolean("isAdmin"));
+         return player;
       }
       catch(Exception e)
       {
-         return false;
+         return null;
       }
       finally
       {

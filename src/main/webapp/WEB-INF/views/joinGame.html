@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+<title>Join Game Page</title>
+</head>
+<body>
+   <div th:replace="navbar"></div>
+   <div class="container">
+      <div th:if="${error}" style="padding-top: 15px;" class="alert alert-danger"><span th:text="${error}" /></div>
+      <div th:if="${msg}" style="padding-top: 15px;" class="alert alert-info"><span th:text="${msg}" /></div>
+   </div>
+</body>
+</html>
