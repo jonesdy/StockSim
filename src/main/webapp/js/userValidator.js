@@ -43,24 +43,26 @@ function validateUsername()
       document.getElementById("usernameErrorDiv").style.display = "none";
       valid = false;
    }
+   else if(usernameElement.value.length == 0)
+   {
+      document.getElementById("usernameError").innerHTML = "Error: User Name is blank.";
+      document.getElementById("usernameErrorDiv").style.display = "block";
+      valid = false;
+   }
+   else if(usernameElement.value.length > 60)
+   {
+      document.getElementById("usernameError").innerHTML = "Error: User Name is too long (must be less than or equal to 60 characters).";
+      document.getElementById("usernameErrorDiv").style.display = "block";
+      valid = false;
+   }
    else
    {
-      usernameElement = document.getElementById("username");
-      if(usernameElement.value.length == 0)
+      $.ajax(
       {
-         document.getElementById("usernameError").innerHTML = "Error: User Name is blank.";
-         document.getElementById("usernameErrorDiv").style.display = "block";
-         valid = false;
-      }
-      else if(usernameElement.value.length > 60)
-      {
-         document.getElementById("usernameError").innerHTML = "Error: User Name is too long.";
-         document.getElementById("usernameErrorDiv").style.display = "block";
-         valid = false;
-      }
-      else
-      {
-         $.getJSON("isUsernameAvailable?username=" + usernameElement.value, function(data)
+         url: "isUsernameAvailable?username=" + usernameElement.value,
+         dataType: "json",
+         async: false,
+         success: function(data)
             {
                if(!data)
                {
@@ -68,8 +70,8 @@ function validateUsername()
                   document.getElementById("usernameErrorDiv").style.display = "block";
                   valid = false;
                }
-            });
-      }
+            }
+      });
    }
    
    if(valid)

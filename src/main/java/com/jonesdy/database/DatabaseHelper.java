@@ -25,6 +25,9 @@ public class DatabaseHelper
    public static final String REMOVE_USER_BY_USERNAME = "DELETE FROM users WHERE username = ?";
    public static final String GET_PLAYER_BY_USERNAME_AND_GID = "SELECT * FROM players WHERE username = ? AND gid = ?";
    public static final String GET_NUMBER_OF_PLAYERS_FROM_GAME_BY_GID = "SELECT COUNT(gid) AS playerCount FROM players WHERE gid = ?";
+   public static final String ADD_GAME = "INSERT INTO games (title, startingMoney, privateGame) VALUES (?, ?, ?)";
+   public static final String GET_GAME_BY_TITLE = "SELECT * FROM games WHERE title = ?";
+   public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin) VALUES (?, ?, ?, ?)";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -557,5 +560,144 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
+
+   public static boolean addNewGame(DbGame game)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         // Add the game
+         ps = connection.prepareStatement(ADD_GAME);
+         ps.setString(1, game.getTitle());
+         ps.setInt(2, game.getStartingMoney());
+         ps.setBoolean(3, game.getPrivateGame());
+         ps.executeUpdate();
+
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static DbGame getDbGameByTitle(String title)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(GET_GAME_BY_TITLE);
+         ps.setString(1, title);
+         rs = ps.executeQuery();
+
+         if(!rs.next())
+         {
+            return null;
+         }
+
+         DbGame game = new DbGame();
+         game.setGid(rs.getInt("gid"));
+         game.setTitle(title);
+         game.setStartingMoney(rs.getInt("startingMoney"));
+         game.setPrivateGame(rs.getBoolean("privateGame"));
+         return game;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static boolean addNewPlayer(DbPlayer player)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         // Add the game
+         ps = connection.prepareStatement(ADD_PLAYER);
+         ps.setString(1, player.getUsername());
+         ps.setInt(2, player.getGid());
+         ps.setInt(3, player.getBalance());
+         ps.setBoolean(4, player.getIsAdmin());
+         ps.executeUpdate();
+
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+
    }
 }

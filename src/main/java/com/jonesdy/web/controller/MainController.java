@@ -181,4 +181,10 @@ public class MainController
       model.setViewName("game");
       return model;
    }
+   @RequestMapping(value = "/isGameTitleAvailable", method = RequestMethod.GET, produces="application/json")
+   public @ResponseBody boolean isGameTitleAvailable(@RequestParam(value = "title", required = true) String title)
+   {
+      return DatabaseHelper.getDbGameByTitle(title) == null;
+   }
+
 }
