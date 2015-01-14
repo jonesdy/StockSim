@@ -6,6 +6,7 @@ public class DbGame
    private String title;
    private int startingMoney;
    private boolean privateGame;
+   private long startTimestamp;
 
    public DbGame()
    {
@@ -61,5 +62,15 @@ public class DbGame
    public void setPrivateGame(boolean pg)
    {
       privateGame = pg;
+   }
+
+   public long getStartTimestamp()
+   {
+      return startTimestamp;
+   }
+
+   public void setStartTimestamp(long st)
+   {
+      startTimestamp = st;
    }
 };

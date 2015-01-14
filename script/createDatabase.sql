@@ -24,6 +24,7 @@ CREATE TABLE games (
    title VARCHAR(60) NOT NULL,
    startingMoney INT NOT NULL,
    privateGame BOOLEAN NOT NULL DEFAULT FALSE,
+   startTimestamp BIGINT NOT NULL, /* Milliseconds since the epoch */
    PRIMARY KEY (gid));
    
 CREATE TABLE players (

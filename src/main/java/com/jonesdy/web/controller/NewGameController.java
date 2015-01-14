@@ -1,5 +1,7 @@
 package com.jonesdy.web.controller;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +91,7 @@ public class NewGameController
       dbGame.setTitle(game.getTitle());
       dbGame.setStartingMoney(game.getStartingMoney() * 100);  // Convert dollars to cents
       dbGame.setPrivateGame(game.isPrivateGame());
+      dbGame.setStartTimestamp(new Date().getTime());
       if(DatabaseHelper.addNewGame(dbGame))
       {
          Authentication auth = SecurityContextHolder.getContext().getAuthentication();

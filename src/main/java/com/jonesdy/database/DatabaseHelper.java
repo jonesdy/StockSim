@@ -25,7 +25,7 @@ public class DatabaseHelper
    public static final String REMOVE_USER_BY_USERNAME = "DELETE FROM users WHERE username = ?";
    public static final String GET_PLAYER_BY_USERNAME_AND_GID = "SELECT * FROM players WHERE username = ? AND gid = ?";
    public static final String GET_NUMBER_OF_PLAYERS_FROM_GAME_BY_GID = "SELECT COUNT(gid) AS playerCount FROM players WHERE gid = ?";
-   public static final String ADD_GAME = "INSERT INTO games (title, startingMoney, privateGame) VALUES (?, ?, ?)";
+   public static final String ADD_GAME = "INSERT INTO games (title, startingMoney, privateGame, startTimestamp) VALUES (?, ?, ?, ?)";
    public static final String GET_GAME_BY_TITLE = "SELECT * FROM games WHERE title = ?";
    public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin) VALUES (?, ?, ?, ?)";
 
@@ -576,6 +576,7 @@ public class DatabaseHelper
          ps.setString(1, game.getTitle());
          ps.setInt(2, game.getStartingMoney());
          ps.setBoolean(3, game.getPrivateGame());
+         ps.setLong(4, game.getStartTimestamp());
          ps.executeUpdate();
 
          return true;
