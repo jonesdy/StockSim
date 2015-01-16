@@ -14,7 +14,7 @@
    <div th:replace="navbar"></div>
    <div th:if="${game}" class="container">
       <h1>Game Title: <span th:text="${game.title}" /></h1>
-      <h1>Starting Money: <span th:text="${game.startingMoney}" /></h1>
+      <h1>Starting Money: $<span th:text="${#numbers.formatDecimal(convertedStartingMoney, 1, 'COMMA', 2, 'POINT')}" /></h1>
       <h1>Private Game?: <span th:text="${game.privateGame}" /></h1>
       <a th:if="${player == null and game.privateGame == false}" class="btn btn-default" href="joinGame.html" th:href="@{/joinGame(gid=${game.gid})}">Join Game</a>
    </div>

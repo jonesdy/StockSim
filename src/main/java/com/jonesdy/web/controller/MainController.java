@@ -160,6 +160,7 @@ public class MainController
          {
             // Public game
             model.addObject("game", game);
+            model.addObject("convertedStartingMoney", (double)(game.getStartingMoney() / (double)100));
             if(!(auth instanceof AnonymousAuthenticationToken))
             {
                UserDetails userDetails = (UserDetails)auth.getPrincipal();
@@ -179,6 +180,7 @@ public class MainController
                if(DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid)) != null)
                {
                   model.addObject("game", game);
+                  model.addObject("convertedStartingMoney", (double)(game.getStartingMoney() / (double)100));
                }
             }
          }
