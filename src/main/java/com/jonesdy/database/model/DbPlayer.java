@@ -7,6 +7,8 @@ public class DbPlayer
    private int gid;
    private int balance;
    private boolean isAdmin;
+   private String inviteCode;
+   private boolean enabled;
 
    public DbPlayer()
    {
@@ -74,5 +76,25 @@ public class DbPlayer
    public void setIsAdmin(boolean ia)
    {
       isAdmin = ia;
+   }
+
+   public String getInviteCode()
+   {
+      return inviteCode;
+   }
+
+   public void setInviteCode(String ic)
+   {
+      inviteCode = ic;
+   }
+
+   public boolean getEnabled()
+   {
+      return enabled;
+   }
+
+   public void setEnabled(boolean e)
+   {
+      enabled = e;
    }
 }

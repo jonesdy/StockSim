@@ -237,6 +237,8 @@ public class MainController
                player.setGid(game.getGid());
                player.setBalance(game.getStartingMoney());
                player.setIsAdmin(false);
+               player.setInviteCode(null);
+               player.setEnabled(true);
 
                if(!DatabaseHelper.addNewPlayer(player))
                {

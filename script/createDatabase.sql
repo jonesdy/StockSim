@@ -33,6 +33,8 @@ CREATE TABLE players (
    gid INT NOT NULL,
    balance INT NOT NULL,
    isAdmin BOOLEAN NOT NULL DEFAULT FALSE,
+   inviteCode VARCHAR(60) DEFAULT NULL,
+   enabled BOOLEAN DEFAULT FALSE,
    PRIMARY KEY (pid),
    CONSTRAINT fk_username_players FOREIGN KEY (username) REFERENCES users (username),
    CONSTRAINT fk_gid FOREIGN KEY (gid) REFERENCES games (gid));

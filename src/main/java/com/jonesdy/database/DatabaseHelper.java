@@ -27,7 +27,7 @@ public class DatabaseHelper
    public static final String GET_NUMBER_OF_PLAYERS_FROM_GAME_BY_GID = "SELECT COUNT(gid) AS playerCount FROM players WHERE gid = ?";
    public static final String ADD_GAME = "INSERT INTO games (title, startingMoney, privateGame, startTimestamp) VALUES (?, ?, ?, ?)";
    public static final String GET_GAME_BY_TITLE = "SELECT * FROM games WHERE title = ?";
-   public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin) VALUES (?, ?, ?, ?)";
+   public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin, inviteCode, enabled) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -234,6 +234,8 @@ public class DatabaseHelper
             player.setGid(rs.getInt("gid"));
             player.setBalance(rs.getInt("balance"));
             player.setIsAdmin(rs.getBoolean("isAdmin"));
+            player.setInviteCode(rs.getString("inviteCode"));
+            player.setEnabled(rs.getBoolean("enabled"));
             players.add(player);
          }
          return players;
@@ -498,6 +500,8 @@ public class DatabaseHelper
          player.setGid(gid);
          player.setBalance(rs.getInt("balance"));
          player.setIsAdmin(rs.getBoolean("isAdmin"));
+         player.setInviteCode(rs.getString("inviteCode"));
+         player.setEnabled(rs.getBoolean("enabled"));
          return player;
       }
       catch(Exception e)
@@ -687,6 +691,8 @@ public class DatabaseHelper
          ps.setInt(2, player.getGid());
          ps.setInt(3, player.getBalance());
          ps.setBoolean(4, player.getIsAdmin());
+         ps.setString(5, player.getInviteCode());
+         ps.setBoolean(6, player.getEnabled());
          ps.executeUpdate();
 
          return true;

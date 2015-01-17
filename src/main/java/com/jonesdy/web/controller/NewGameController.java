@@ -112,6 +112,8 @@ public class NewGameController
          player.setGid(dbGame.getGid());
          player.setBalance(dbGame.getStartingMoney());
          player.setIsAdmin(true);
+         player.setInviteCode(null);
+         player.setEnabled(true);
          if(!DatabaseHelper.addNewPlayer(player))
          {
             return "Unable to add user as a player in the game.";
