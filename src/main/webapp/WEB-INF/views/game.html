@@ -19,6 +19,7 @@
 
       <a th:if="${player == null and game.privateGame == false and userLoggedIn == true}" class="btn btn-default" href="joinGame.html" th:href="@{/joinGame(gid=${game.gid})}">Join Game</a>
 
+      <h3 th:if="${player}">Balance: $<span th:text="${#numbers.formatDecimal(convertedBalance, 1, 'COMMA', 2, 'POINT')}" /></h3>
       <h3 th:if="${player}">Currently Owned Stocks:</h3>
       <table class="table table-bordered" style="width:100%" th:if="${player != null and stocks != null}">
          <tr>

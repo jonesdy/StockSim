@@ -188,6 +188,7 @@ public class MainController
                {
                   model.addObject("stocks", stocks);
                }
+               model.addObject("convertedBalance", (double)(player.getBalance() / (double)100));
             }
          }
       }
