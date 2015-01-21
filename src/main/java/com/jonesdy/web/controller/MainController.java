@@ -17,6 +17,7 @@ import com.jonesdy.web.model.WebGame;
 import com.jonesdy.database.DatabaseHelper;
 import com.jonesdy.database.model.DbGame;
 import com.jonesdy.database.model.DbPlayer;
+import com.jonesdy.database.model.DbStock;
 
 @Controller
 public class MainController
@@ -155,32 +156,37 @@ public class MainController
       {
          DbGame game = DatabaseHelper.getDbGameByGid(Integer.parseInt(gid));
          Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+         boolean userLoggedIn = !(auth instanceof AnonymousAuthenticationToken);
+         model.addObject("userLoggedIn", userLoggedIn);
 
          if(!game.getPrivateGame())
          {
             // Public game
             model.addObject("game", game);
             model.addObject("convertedStartingMoney", (double)(game.getStartingMoney() / (double)100));
-            if(!(auth instanceof AnonymousAuthenticationToken))
+         }
+         else if(userLoggedIn)
+         {
+            // Private game, only show information if user is in this game
+            UserDetails userDetails = (UserDetails)auth.getPrincipal();
+            if(DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid)) != null)
             {
-               UserDetails userDetails = (UserDetails)auth.getPrincipal();
-               DbPlayer player = DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid));
-               if(player != null)
-               {
-                  model.addObject("player", player);
-               }
+               model.addObject("game", game);
+               model.addObject("convertedStartingMoney", (double)(game.getStartingMoney() / (double)100));
             }
          }
-         else
+            
+         if(userLoggedIn)
          {
-            // Private game, check to make sure this user is in this game
-            if(!(auth instanceof AnonymousAuthenticationToken))
+            UserDetails userDetails = (UserDetails)auth.getPrincipal();
+            DbPlayer player = DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid));
+            if(player != null)
             {
-               UserDetails userDetails = (UserDetails)auth.getPrincipal();
-               if(DatabaseHelper.getDbPlayerByUsernameAndGid(userDetails.getUsername(), Integer.parseInt(gid)) != null)
+               model.addObject("player", player);
+               ArrayList<DbStock> stocks = DatabaseHelper.getDbStocksByPid(player.getPid());
+               if(stocks != null && !stocks.isEmpty())
                {
-                  model.addObject("game", game);
-                  model.addObject("convertedStartingMoney", (double)(game.getStartingMoney() / (double)100));
+                  model.addObject("stocks", stocks);
                }
             }
          }

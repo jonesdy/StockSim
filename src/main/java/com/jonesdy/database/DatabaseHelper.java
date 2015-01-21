@@ -28,6 +28,7 @@ public class DatabaseHelper
    public static final String ADD_GAME = "INSERT INTO games (title, startingMoney, privateGame, startTimestamp) VALUES (?, ?, ?, ?)";
    public static final String GET_GAME_BY_TITLE = "SELECT * FROM games WHERE title = ?";
    public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin, inviteCode, enabled) VALUES (?, ?, ?, ?, ?, ?)";
+   public static final String GET_STOCKS_BY_PID = "SELECT * FROM stocks WHERE pid = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -719,6 +720,59 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
 
+   public static ArrayList<DbStock> getDbStocksByPid(int pid)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(GET_STOCKS_BY_PID);
+         ps.setInt(1, pid);
+         rs = ps.executeQuery();
+
+         ArrayList<DbStock> stocks = new ArrayList<DbStock>();
+
+         while(rs.next())
+         {
+            DbStock stock = new DbStock();
+            stock.setSid(rs.getInt("sid"));
+            stock.setTickerSymbol(rs.getString("tickerSymbol"));
+            stock.setPid(rs.getInt("pid"));
+            stock.setCount(rs.getInt("count"));
+            stocks.add(stock);
+         }
+         return stocks;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
    }
 }

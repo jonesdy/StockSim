@@ -16,8 +16,25 @@
       <h1>Game Title: <span th:text="${game.title}" /></h1>
       <h1>Starting Money: $<span th:text="${#numbers.formatDecimal(convertedStartingMoney, 1, 'COMMA', 2, 'POINT')}" /></h1>
       <h1>Private Game?: <span th:text="${game.privateGame}" /></h1>
-      <a th:if="${player == null and game.privateGame == false}" class="btn btn-default" href="joinGame.html" th:href="@{/joinGame(gid=${game.gid})}">Join Game</a>
+
+      <a th:if="${player == null and game.privateGame == false and userLoggedIn == true}" class="btn btn-default" href="joinGame.html" th:href="@{/joinGame(gid=${game.gid})}">Join Game</a>
+
+      <h3 th:if="${player}">Currently Owned Stocks:</h3>
+      <table class="table table-bordered" style="width:100%" th:if="${player != null and stocks != null}">
+         <tr>
+            <td><b>Ticker Symbol</b></td>
+            <td><b>Amount</b></td>
+         </tr>
+         <tr th:each="stock : ${stocks}">
+            <td th:text="${stock.tickerSymbol}" />
+            <td th:text="${stock.count}" />
+         </tr>
+      </table>
+      <ul class="list-group" th:if="${player != null and stocks == null}">
+         <li class="list-group-item">You do not own any stocks</li>
+      </ul>
    </div>
-   <div th:unless="${game}" class="container"><div class="alert alert-danger">This game is not valid or is a private game that you are not in.</div></div>
+
+   <div th:unless="${game}" class="container"><div class="alert alert-danger">This game is not valid or is a private game that you are not in</div></div>
 </body>
 </html>
