@@ -61,17 +61,8 @@ public class DatabaseHelper
          {
             return null;
          }
-         else
-         {
-            DbUser user = new DbUser();
-            user.setUsername(username);
-            user.setPassword(rs.getString("password"));
-            user.setEmail(rs.getString("email"));
-            user.setConfirmCode(rs.getString("confirmCode"));
-            user.setEnabled(rs.getBoolean("enabled"));
-            user.setConfirmed(rs.getBoolean("confirmed"));
-            return user;
-         }
+
+         return getDbUserFromResultSet(rs);
       }
       catch(Exception e)
       {
@@ -119,14 +110,7 @@ public class DatabaseHelper
             return null;
          }
 
-         DbUser user = new DbUser();
-         user.setUsername(confirmCode);
-         user.setPassword(rs.getString("password"));
-         user.setEmail(rs.getString("email"));
-         user.setConfirmCode(rs.getString("confirmCode"));
-         user.setEnabled(rs.getBoolean("enabled"));
-         user.setConfirmed(rs.getBoolean("confirmed"));
-         return user;
+         return getDbUserFromResultSet(rs);
       }
       catch(Exception e)
       {
@@ -229,15 +213,11 @@ public class DatabaseHelper
          ArrayList<DbPlayer> players = new ArrayList<DbPlayer>();
          while(rs.next())
          {
-            DbPlayer player = new DbPlayer();
-            player.setPid(rs.getInt("pid"));
-            player.setUsername(username);
-            player.setGid(rs.getInt("gid"));
-            player.setBalance(rs.getInt("balance"));
-            player.setIsAdmin(rs.getBoolean("isAdmin"));
-            player.setInviteCode(rs.getString("inviteCode"));
-            player.setEnabled(rs.getBoolean("enabled"));
-            players.add(player);
+            DbPlayer player = getDbPlayerFromResultSet(rs);
+            if(player != null)
+            {
+               players.add(player);
+            }
          }
          return players;
       }
@@ -287,13 +267,7 @@ public class DatabaseHelper
             return null;
          }
 
-         DbGame game = new DbGame();
-         game.setGid(gid);
-         game.setTitle(rs.getString("title"));
-         game.setStartingMoney(rs.getInt("startingMoney"));
-         game.setPrivateGame(rs.getBoolean("privateGame"));
-         game.setStartTimestamp(rs.getLong("startTimestamp"));
-         return game;
+         return getDbGameFromResultSet(rs);
       }
       catch(Exception e)
       {
@@ -338,13 +312,11 @@ public class DatabaseHelper
          ArrayList<DbGame> games = new ArrayList<DbGame>();
          while(rs.next())
          {
-            DbGame game = new DbGame();
-            game.setGid(rs.getInt("gid"));
-            game.setTitle(rs.getString("title"));
-            game.setStartingMoney(rs.getInt("startingMoney"));
-            game.setPrivateGame(rs.getBoolean("privateGame"));
-            game.setStartTimestamp(rs.getLong("startTimestamp"));
-            games.add(game);
+            DbGame game = getDbGameFromResultSet(rs);
+            if(game != null)
+            {
+               games.add(game);
+            }
          }
          return games;
       }
@@ -495,15 +467,7 @@ public class DatabaseHelper
             return null;
          }
 
-         DbPlayer player = new DbPlayer();
-         player.setPid(rs.getInt("pid"));
-         player.setUsername(username);
-         player.setGid(gid);
-         player.setBalance(rs.getInt("balance"));
-         player.setIsAdmin(rs.getBoolean("isAdmin"));
-         player.setInviteCode(rs.getString("inviteCode"));
-         player.setEnabled(rs.getBoolean("enabled"));
-         return player;
+         return getDbPlayerFromResultSet(rs);
       }
       catch(Exception e)
       {
@@ -641,13 +605,7 @@ public class DatabaseHelper
             return null;
          }
 
-         DbGame game = new DbGame();
-         game.setGid(rs.getInt("gid"));
-         game.setTitle(title);
-         game.setStartingMoney(rs.getInt("startingMoney"));
-         game.setPrivateGame(rs.getBoolean("privateGame"));
-         game.setStartTimestamp(rs.getLong("startTimestamp"));
-         return game;
+         return getDbGameFromResultSet(rs);
       }
       catch(Exception e)
       {
@@ -661,7 +619,7 @@ public class DatabaseHelper
             {
                ps.close();
             }
-            if(rs != null)
+            
             {
                rs.close();
             }
@@ -739,12 +697,11 @@ public class DatabaseHelper
 
          while(rs.next())
          {
-            DbStock stock = new DbStock();
-            stock.setSid(rs.getInt("sid"));
-            stock.setTickerSymbol(rs.getString("tickerSymbol"));
-            stock.setPid(rs.getInt("pid"));
-            stock.setCount(rs.getInt("count"));
-            stocks.add(stock);
+            DbStock stock = getDbStockFromResultSet(rs);
+            if(stock != null)
+            {
+               stocks.add(stock);
+            }
          }
          return stocks;
       }
@@ -773,6 +730,102 @@ public class DatabaseHelper
          {
             // Nothing we can do
          }
+      }
+   }
+
+   /**
+    * Returns the DbGame from the current result set (so call rs.next() before calling this function)
+   */
+   private static DbGame getDbGameFromResultSet(ResultSet rs)
+   {
+      try
+      {
+         DbGame game = new DbGame();
+         game.setGid(rs.getInt("gid"));
+         game.setTitle(rs.getString("title"));
+         game.setStartingMoney(rs.getInt("startingMoney"));
+         game.setPrivateGame(rs.getBoolean("privateGame"));
+         game.setStartTimestamp(rs.getLong("startTimestamp"));
+         return game;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+   }
+
+   private static DbPlayer getDbPlayerFromResultSet(ResultSet rs)
+   {
+      try
+      {
+         DbPlayer player = new DbPlayer();
+         player.setPid(rs.getInt("pid"));
+         player.setUsername(rs.getString("username"));
+         player.setGid(rs.getInt("gid"));
+         player.setBalance(rs.getInt("balance"));
+         player.setIsAdmin(rs.getBoolean("isAdmin"));
+         player.setInviteCode(rs.getString("inviteCode"));
+         player.setEnabled(rs.getBoolean("enabled"));
+         return player;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+   }
+
+   private static DbStock getDbStockFromResultSet(ResultSet rs)
+   {
+      try
+      {
+         DbStock stock = new DbStock();
+         stock.setSid(rs.getInt("sid"));
+         stock.setTickerSymbol(rs.getString("tickerSymbol"));
+         stock.setPid(rs.getInt("pid"));
+         stock.setCount(rs.getInt("count"));
+         return stock;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+   }
+
+   private static DbTransaction getDbTransactionFromResultSet(ResultSet rs)
+   {
+      try
+      {
+         DbTransaction transaction = new DbTransaction();
+         transaction.setTid(rs.getInt("tid"));
+         transaction.setSid(rs.getInt("sid"));
+         transaction.setCount(rs.getInt("count"));
+         transaction.setPrice(rs.getInt("price"));
+         transaction.setTimestamp(rs.getLong("timestamp"));
+         transaction.setBuy(rs.getBoolean("buy"));
+         return transaction;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+   }
+
+   private static DbUser getDbUserFromResultSet(ResultSet rs)
+   {
+      try
+      {
+         DbUser user = new DbUser();
+         user.setUsername(rs.getString("username"));
+         user.setPassword(rs.getString("password"));
+         user.setEmail(rs.getString("email"));
+         user.setConfirmCode(rs.getString("confirmCode"));
+         user.setEnabled(rs.getBoolean("enabled"));
+         user.setConfirmed(rs.getBoolean("confirmed"));
+         return user;
+      }
+      catch(Exception e)
+      {
+         return null;
       }
    }
 }
