@@ -153,7 +153,7 @@ public class RegisterController
       return null;
    }
    
-   private static String generateConfirmCode()
+   public static String generateConfirmCode()
    {
       final String letters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
       final int codeLength = 32;

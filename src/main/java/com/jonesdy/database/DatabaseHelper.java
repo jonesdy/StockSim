@@ -29,6 +29,9 @@ public class DatabaseHelper
    public static final String GET_GAME_BY_TITLE = "SELECT * FROM games WHERE title = ?";
    public static final String ADD_PLAYER = "INSERT INTO players (username, gid, balance, isAdmin, inviteCode, enabled) VALUES (?, ?, ?, ?, ?, ?)";
    public static final String GET_STOCKS_BY_PID = "SELECT * FROM stocks WHERE pid = ?";
+   public static final String GET_PLAYER_BY_INVITE_CODE = "SELECT * FROM players WHERE inviteCode = ?";
+   public static final String REMOVE_PLAYER_BY_INVITE_CODE = "DELETE FROM players WHERE inviteCode = ?";
+   public static final String SET_ENABLED_BY_INVITE_CODE = "UPDATE players SET enabled = true WHERE inviteCode = ?";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -144,26 +147,16 @@ public class DatabaseHelper
    {
       Connection connection = null;
       PreparedStatement ps = null;
-      ResultSet rs = null;
 
       try
       {
+         DbUser user = getDbUserByConfirmCode(confirmCode);
+         if(user == null || user.getConfirmed())
+         {
+            return false;
+         }
+
          connection = dataSource.getConnection();
-         ps = connection.prepareStatement(GET_USER_BY_CONFIRM_CODE);
-         ps.setString(1, confirmCode);
-         rs = ps.executeQuery();
-         if(!rs.next())
-         {
-            return false;
-         }
-         else if(rs.getBoolean("confirmed"))
-         {
-            return false;
-         }
-
-         ps.close();
-         ps = null;
-
          ps = connection.prepareStatement(SET_CONFIRMED_BY_CONFIRM_CODE);
          ps.setString(1, confirmCode);
          ps.executeQuery();
@@ -180,10 +173,6 @@ public class DatabaseHelper
             if(ps != null)
             {
                ps.close();
-            }
-            if(rs != null)
-            {
-               rs.close();
             }
             if(connection != null)
             {
@@ -731,6 +720,138 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
+
+   public static DbPlayer getDbPlayerByInviteCode(String inviteCode)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         ps = connection.prepareStatement(GET_PLAYER_BY_INVITE_CODE);
+         ps.setString(1, inviteCode);
+         rs = ps.executeQuery();
+         if(!rs.next())
+         {
+            return null;
+         }
+
+         return getDbPlayerFromResultSet(rs);
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static boolean removePlayerByInviteCode(String inviteCode)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+
+         // Remove the user roles first
+         ps = connection.prepareStatement(REMOVE_PLAYER_BY_INVITE_CODE);
+         ps.setString(1, inviteCode);
+         ps.executeUpdate();
+
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+   }
+
+   public static boolean enablePlayerByInviteCode(String inviteCode)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+
+      try
+      {
+         DbPlayer player = getDbPlayerByInviteCode(inviteCode);
+         if(player == null || player.getEnabled())
+         {
+            return false;
+         }
+
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(SET_ENABLED_BY_INVITE_CODE);
+         ps.setString(1, inviteCode);
+         ps.executeQuery();
+         return true;
+      }
+      catch(Exception e)
+      {
+         return false;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+            // Nothing we can do
+         }
+      }
+
    }
 
    /**
