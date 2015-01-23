@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.jonesdy.yql.model.Quote;
 import com.jonesdy.yql.model.QuoteResults;
+import com.jonesdy.yql.model.Query;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -14,15 +15,15 @@ import javax.xml.bind.Unmarshaller;
 
 public class YqlHelper
 {
-   public static final String REPLACE = "?";
+   public static final String REPLACE = "#";
    public static final String GET_QUOTE = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quote%20where%20symbol%20%3D%20%22" + REPLACE + "%22&diagnostics=false&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
    public static Quote getStockQuote(String symbol)
    {
       try
       {
-         String query = GET_QUOTE.replace(REPLACE, symbol);
-         URL url = new URL(query);
+         String queryString = GET_QUOTE.replace(REPLACE, symbol);
+         URL url = new URL(queryString);
          HttpURLConnection connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");
          connection.setRequestProperty("Accept", "application/xml");
@@ -31,7 +32,8 @@ public class YqlHelper
          InputStream xml = connection.getInputStream();
 
          Unmarshaller unmarshaller = jc.createUnmarshaller();
-         QuoteResults results = (QuoteResults)unmarshaller.unmarshal(xml);
+         Query query = (Query)unmarshaller.unmarshal(xml);
+         QuoteResults results = query.getQuoteResults();
 
          connection.disconnect();
 
