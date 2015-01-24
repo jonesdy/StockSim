@@ -3,15 +3,15 @@ package com.jonesdy.yql;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.jonesdy.yql.model.Quote;
-import com.jonesdy.yql.model.QuoteResults;
-import com.jonesdy.yql.model.Query;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 public class YqlHelper
 {
@@ -27,28 +27,45 @@ public class YqlHelper
          HttpURLConnection connection = (HttpURLConnection)url.openConnection();
          connection.setRequestMethod("GET");
          connection.setRequestProperty("Accept", "application/xml");
-
-         JAXBContext jc = JAXBContext.newInstance(QuoteResults.class);
          InputStream xml = connection.getInputStream();
-
-         Unmarshaller unmarshaller = jc.createUnmarshaller();
-         Query query = (Query)unmarshaller.unmarshal(xml);
-         QuoteResults results = query.getQuoteResults();
+         
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         DocumentBuilder db = dbf.newDocumentBuilder();
+         Document dom = db.parse(xml);
 
          connection.disconnect();
-
-         ArrayList<Quote> quotes = results.getQuotes();
-
-         if(quotes.size() != 1)
+         
+         Element docEle = dom.getDocumentElement();
+         NodeList nl = docEle.getElementsByTagName("quote");
+         if(nl == null || nl.getLength() != 1)
          {
             return null;
          }
-
-         return quotes.get(0);
+         
+         Element el = (Element)nl.item(0);
+         Quote quote = new Quote();
+         quote.setSymbol(getStringValue(el, "Symbol"));
+         quote.setName(getStringValue(el, "Name"));
+         quote.setLastTradePriceOnly(getStringValue(el, "LastTradePriceOnly"));
+         return quote;
       }
       catch(Exception e)
       {
          return null;
       }
+   }
+   
+   private static String getStringValue(Element ele, String tagName)
+   {
+      String value = null;
+      
+      NodeList nl = ele.getElementsByTagName(tagName);
+      if(nl != null && nl.getLength() > 0)
+      {
+         Element el = (Element)nl.item(0);
+         value = el.getFirstChild().getNodeValue();
+      }
+      
+      return value;
    }
 }
