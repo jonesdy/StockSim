@@ -28,7 +28,7 @@ public class StockController
          String cents = "00";
          if(quote.getCents() >= 100)
          {
-            total.substring(0, total.length() - 2);
+            dollars = total.substring(0, total.length() - 2);
             cents = total.substring(total.length() - 2, total.length());
          }
          else

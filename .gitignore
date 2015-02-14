@@ -1,4 +1,5 @@
 *.war
 *.class
 *.swp
+*.swo
 /target
