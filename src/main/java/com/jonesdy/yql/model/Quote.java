@@ -4,7 +4,7 @@ public class Quote
 {
    private String symbol;
    private String name;
-   private String lastTradePriceOnly;
+   private int cents;
 
    public String getSymbol()
    {
@@ -26,13 +26,13 @@ public class Quote
       name = n;
    }
 
-   public String getLastTradePriceOnly()
+   public int getCents()
    {
-      return lastTradePriceOnly;
+      return cents;
    }
    
-   public void setLastTradePriceOnly(String ltpo)
+   public void setCents(int c)
    {
-      lastTradePriceOnly = ltpo;
+      cents = c;
    }
 }

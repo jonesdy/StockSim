@@ -16,12 +16,14 @@ public class StockController
    {
       ModelAndView model = new ModelAndView();
 
-      Quote quote = YqlHelper.getStockQuote("YHOO");
+      Quote quote = YqlHelper.getStockQuote("ACST");
       if(quote != null)
       {
          model.addObject("tickerSymbol", quote.getSymbol());
          model.addObject("name", quote.getName());
-         model.addObject("price", quote.getLastTradePriceOnly());
+         String cents = String.valueOf(quote.getCents());
+         String price = cents.substring(0, cents.length() - 2) + "." + cents.substring(cents.length() - 2, cents.length());
+         model.addObject("price", price);
       }
 
       model.setViewName("viewStock");

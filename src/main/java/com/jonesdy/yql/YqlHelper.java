@@ -46,7 +46,22 @@ public class YqlHelper
          Quote quote = new Quote();
          quote.setSymbol(getStringValue(el, "Symbol"));
          quote.setName(getStringValue(el, "Name"));
-         quote.setLastTradePriceOnly(getStringValue(el, "LastTradePriceOnly"));
+         String lpto = getStringValue(el, "LastTradePriceOnly");
+
+         // 1234.56 -> {"1234", "56"}
+         String[] splits = lpto.split("\\.");
+         int dollars = Integer.parseInt(splits[0]);
+         int cents = Integer.parseInt(splits[1]);
+
+         // Round up the cents, if needed
+         if(cents >= 100)
+         {
+            cents = (int)roundToSignificantFigures(cents, 2);
+            String c = String.valueOf(cents);
+            cents = Integer.parseInt(String.valueOf(c.charAt(0)) + String.valueOf(c.charAt(1)));
+         }
+
+         quote.setCents((dollars * 100) + cents);
          return quote;
       }
       catch(Exception e)
@@ -67,5 +82,20 @@ public class YqlHelper
       }
       
       return value;
+   }
+
+   public static double roundToSignificantFigures(double num, int n)
+   {
+      if(num == 0)
+      {
+         return 0;
+      }
+
+      final double d = Math.ceil(Math.log10(num < 0 ? -num : num));
+      final int power = n - (int)d;
+
+      final double magnitude = Math.pow(10, power);
+      final long shifted = Math.round(num * magnitude);
+      return shifted/magnitude;
    }
 }
