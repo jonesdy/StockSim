@@ -9,11 +9,14 @@
 </head>
 <body>
    <div th:replace="navbar"></div>
-   <div class="container">
+   <div class="container" th:if="${tickerSymbol}">
       <h2>Stock:</h2>
       <label>Ticker Symbol: <span th:text="${tickerSymbol}" /></label><br />
       <label>Name: <span th:text="${name}" /></label><br />
       <label>Price: $<span th:text="${price}" /></label>
+   </div>
+   <div class="container" th:unless="${tickerSymbol}">
+      <h2>Stock not found</h2>
    </div>
 </body>
 </html>
