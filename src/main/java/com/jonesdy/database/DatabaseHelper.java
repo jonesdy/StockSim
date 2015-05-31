@@ -32,6 +32,8 @@ public class DatabaseHelper
    public static final String GET_PLAYER_BY_INVITE_CODE = "SELECT * FROM players WHERE inviteCode = ?";
    public static final String REMOVE_PLAYER_BY_INVITE_CODE = "DELETE FROM players WHERE inviteCode = ?";
    public static final String SET_ENABLED_BY_INVITE_CODE = "UPDATE players SET enabled = true WHERE inviteCode = ?";
+   // TODO: Write this better using a join
+   public static final String GET_GAMES_BY_USERNAME = "SELECT * FROM games WHERE gid IN (SELECT gid FROM players WHERE username = ?)";
 
    private static JndiDataSourceLookup dsLookup = null;
    private static DataSource dataSource = null;
@@ -851,7 +853,57 @@ public class DatabaseHelper
             // Nothing we can do
          }
       }
+   }
 
+   public static ArrayList<DbGame> getDbGamesByUsername(String username)
+   {
+      Connection connection = null;
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+
+      try
+      {
+         connection = dataSource.getConnection();
+         ps = connection.prepareStatement(GET_GAMES_BY_USERNAME);
+         ps.setString(1, username);
+         rs = ps.executeQuery();
+
+         ArrayList<DbGame> games = new ArrayList<DbGame>();
+         while(rs.next())
+         {
+            DbGame game = getDbGameFromResultSet(rs);
+            if(game != null)
+            {
+               games.add(game);
+            }
+         }
+         return games;
+      }
+      catch(Exception e)
+      {
+         return null;
+      }
+      finally
+      {
+         try
+         {
+            if(ps != null)
+            {
+               ps.close();
+            }
+            if(rs != null)
+            {
+               rs.close();
+            }
+            if(connection != null)
+            {
+               connection.close();
+            }
+         }
+         catch(Exception e)
+         {
+         }
+      }
    }
 
    /**
