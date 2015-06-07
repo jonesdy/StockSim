@@ -18,7 +18,7 @@
             <li><a href="register">Register</a></li>
          </ul>
          <ul class="nav navbar-nav navbar-right" sec:authorize="hasRole('ROLE_USER')">
-            <p class="navbar-text" sec:authentication="name"></p>
+            <li><a sec:authentication="name"></a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="admin">Admin</a></li>
             <li><a href="javascript:formSubmit()">Logout</a></li>
          </ul>
