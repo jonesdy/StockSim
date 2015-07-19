@@ -145,7 +145,7 @@ public class RegisterController
       }
       catch(Exception e)
       {
-         DatabaseHelper.removeUserAndRolesByUsername(dbUser.getUsername());  // Comment out for testing
+         //DatabaseHelper.removeUserAndRolesByUsername(dbUser.getUsername());  // Comment out for testing
          return "Unable to send confirmation email.";
       }
 
