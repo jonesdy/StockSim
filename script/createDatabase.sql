@@ -22,16 +22,16 @@ CREATE TABLE user_roles (
 CREATE TABLE games (
    gid INT NOT NULL AUTO_INCREMENT,
    title VARCHAR(60) NOT NULL,
-   startingMoney INT NOT NULL,
+   startingMoney DECIMAL(20, 2) NOT NULL,
    privateGame BOOLEAN NOT NULL DEFAULT FALSE,
-   startTimestamp BIGINT NOT NULL, /* Milliseconds since the epoch */
+   startTimestamp TIMESTAMP NOT NULL,
    PRIMARY KEY (gid));
    
 CREATE TABLE players (
    pid INT NOT NULL AUTO_INCREMENT,
    username VARCHAR(60) NOT NULL,
    gid INT NOT NULL,
-   balance INT NOT NULL,
+   balance DECIMAL(20, 2) NOT NULL,
    isAdmin BOOLEAN NOT NULL DEFAULT FALSE,
    inviteCode VARCHAR(60) DEFAULT NULL,
    enabled BOOLEAN DEFAULT FALSE,
@@ -51,8 +51,8 @@ CREATE TABLE transactions (
    tid INT NOT NULL AUTO_INCREMENT,
    sid INT NOT NULL,
    count INT NOT NULL,
-   price INT NOT NULL,       /* In pennies */
-   timestamp BIGINT NOT NULL, /* Milliseconds since the epoch */
+   price DECIMAL(20, 2) NOT NULL,
+   timestamp TIMESTAMP NOT NULL,
    buy BOOLEAN NOT NULL DEFAULT FALSE,
    PRIMARY KEY (tid),
    CONSTRAINT fk_sid FOREIGN KEY (sid) REFERENCES stocks (sid));

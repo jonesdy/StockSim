@@ -3,7 +3,6 @@ package com.jonesdy.data.access;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -24,5 +23,28 @@ public abstract class DatabaseDao
    protected DataSource getDataSource()
    {
       return dataSource;
+   }
+
+   protected static void closeConPsRs(Connection con, PreparedStatement ps, ResultSet rs)
+   {
+      try
+      {
+         if(con != null)
+         {
+            con.close();
+         }
+         if(ps != null)
+         {
+            ps.close();
+         }
+         if(rs != null)
+         {
+            rs.close();
+         }
+      }
+      catch(Exception e)
+      {
+         // Nothing we can do
+      }
    }
 }
