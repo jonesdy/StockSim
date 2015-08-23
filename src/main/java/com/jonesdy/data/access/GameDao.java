@@ -47,7 +47,7 @@ public class GameDao extends DatabaseDao
       }
    }
 
-   public List<GameDto> getPublicGames()
+   public List<GameDto> selectPublicGames()
    {
       Connection con = null;
       PreparedStatement ps = null;
