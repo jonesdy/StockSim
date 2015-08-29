@@ -59,6 +59,16 @@ public class UserDto
       email = e;
    }
 
+   public String getConfirmCode()
+   {
+      return confirmCode;
+   }
+
+   public void setConfirmCode(String code)
+   {
+      confirmCode = code;
+   }
+
    public boolean getEnabled()
    {
       return enabled;
