@@ -18,7 +18,7 @@ namespace StockSim.Controllers
       private readonly SignInManager<ApplicationUser> _signInManager;
       //private readonly IEmailSender _emailSender;
       //private readonly ISmsSender _smsSender;
-      private readonly StockSimIdentityDbContext _identityDbContext;
+      private readonly StockSimDbContext _identityDbContext;
       //private static bool _databaseChecked;
 
       public AccountController(
@@ -26,7 +26,7 @@ namespace StockSim.Controllers
           SignInManager<ApplicationUser> signInManager,
           /*IEmailSender emailSender,
           ISmsSender smsSender,*/
-          StockSimIdentityDbContext identityDbContext)
+          StockSimDbContext identityDbContext)
       {
          _userManager = userManager;
          _signInManager = signInManager;

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
+using StockSim.Data.Access;
+using StockSim.Data.Transfer;
 
 namespace StockSim
 {
@@ -9,19 +11,29 @@ namespace StockSim
    {
       public void ConfigureServices(IServiceCollection services)
       {
+         services.AddEntityFramework()
+            .AddSqlite()
+            .AddDbContext<StockSimDbContext>();
+         services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<StockSimDbContext>()
+            .AddDefaultTokenProviders();
          services.AddMvc();
          services.AddLogging();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
       {
-         var settings = new ConsoleLoggerSettings();
-         loggerFactory.AddProvider(new ConsoleLoggerProvider(settings));
+         loggerFactory.MinimumLevel = LogLevel.Information;
+         loggerFactory.AddConsole();
          app.UseDeveloperExceptionPage();
 
          app.UseMvcWithDefaultRoute();
 
          app.UseWelcomePage();
+
+         app.UseStaticFiles();
+
+         app.UseIdentity();
       }
    }
 }

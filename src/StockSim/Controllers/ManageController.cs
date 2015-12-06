@@ -4,11 +4,12 @@ using Microsoft.AspNet.Mvc;
 using StockSim.Data.Transfer;
 using StockSim.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace StockSim.Controllers
 {
-   /*[Authorize]
+   [Authorize]
    public class ManageController : Controller
    {
       private readonly UserManager<ApplicationUser> _userManager;
@@ -25,7 +26,7 @@ namespace StockSim.Controllers
          _userManager = userManager;
          _signInManager = signInManager;
          /*_emailSender = emailSender;
-         _smsSender = smsSender;
+         _smsSender = smsSender;*/
       }
 
       //
@@ -107,7 +108,7 @@ namespace StockSim.Controllers
          var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
          await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
          return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
-      }
+      }*/
 
       //
       // POST: /Manage/EnableTwoFactorAuthentication
@@ -141,7 +142,7 @@ namespace StockSim.Controllers
 
       //
       // GET: /Account/VerifyPhoneNumber
-      [HttpGet]
+      /*[HttpGet]
       public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
       {
          var code = await _userManager.GenerateChangePhoneNumberTokenAsync(await GetCurrentUserAsync(), phoneNumber);
@@ -190,7 +191,7 @@ namespace StockSim.Controllers
             }
          }
          return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
-      }
+      }*/
 
       //
       // GET: /Manage/ChangePassword
@@ -361,5 +362,5 @@ namespace StockSim.Controllers
             return RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
          }
       }
-   }*/
+   }
 }
