@@ -17,7 +17,7 @@ namespace StockSim
       {
          var settings = new ConsoleLoggerSettings();
          loggerFactory.AddProvider(new ConsoleLoggerProvider(settings));
-         //app.UseDeveloperExceptionPage();
+         app.UseDeveloperExceptionPage();
 
          app.UseMvcWithDefaultRoute();
 

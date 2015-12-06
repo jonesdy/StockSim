@@ -2,3 +2,4 @@ obj/
 bin/
 stocksim.db
 project.lock.json
+*.suo
