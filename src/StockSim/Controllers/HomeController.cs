@@ -15,7 +15,7 @@ namespace StockSim.Controllers
       {
          try
          {
-            using (var db = new StockSimDbContext())
+            /*using (var db = new StockSimDbContext())
             {
                db.GameDtos.Add(new GameDto
                {
@@ -26,7 +26,7 @@ namespace StockSim.Controllers
                });
 
                db.SaveChanges();
-            }
+            }*/
          }
          catch (Exception e)
          {

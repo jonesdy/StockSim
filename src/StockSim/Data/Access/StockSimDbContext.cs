@@ -1,11 +1,12 @@
-﻿using Microsoft.Data.Entity;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Data.Entity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using StockSim.Data.Transfer;
 
 namespace StockSim.Data.Access
 {
-   public class StockSimDbContext : DbContext
+   public class StockSimDbContext : IdentityDbContext<ApplicationUser>
    {
       public DbSet<GameDto> GameDtos { get; set; }
       public DbSet<PlayerDto> PlayerDtos { get; set; }

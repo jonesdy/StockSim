@@ -2,9 +2,11 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.Data.Entity;
 using StockSim.Data.Access;
 using StockSim.Data.Transfer;
 using StockSim.Models;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ namespace StockSim.Controllers
       //private readonly IEmailSender _emailSender;
       //private readonly ISmsSender _smsSender;
       private readonly StockSimDbContext _identityDbContext;
-      //private static bool _databaseChecked;
+      private static bool _databaseChecked;
 
       public AccountController(
           UserManager<ApplicationUser> userManager,
@@ -52,7 +54,7 @@ namespace StockSim.Controllers
       [ValidateAntiForgeryToken]
       public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
       {
-         //EnsureDatabaseCreated(_identityDbContext);
+         EnsureDatabaseCreated(_identityDbContext);
          ViewData["ReturnUrl"] = returnUrl;
          if (ModelState.IsValid)
          {
@@ -98,10 +100,15 @@ namespace StockSim.Controllers
       [ValidateAntiForgeryToken]
       public async Task<IActionResult> Register(RegisterViewModel model)
       {
-         //EnsureDatabaseCreated(_identityDbContext);
+         EnsureDatabaseCreated(_identityDbContext);
          if (ModelState.IsValid)
          {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser
+            {
+               UserName = model.Email,
+               Email = model.Email,
+               SecurityStamp = Guid.NewGuid().ToString(),
+            };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -138,7 +145,7 @@ namespace StockSim.Controllers
       [ValidateAntiForgeryToken]
       public IActionResult ExternalLogin(string provider, string returnUrl = null)
       {
-         //EnsureDatabaseCreated(_identityDbContext);
+         EnsureDatabaseCreated(_identityDbContext);
          // Request a redirect to the external login provider.
          var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
          var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
@@ -433,14 +440,14 @@ namespace StockSim.Controllers
       // not yet supported in this release.
       // Please see this http://go.microsoft.com/fwlink/?LinkID=615859 for more information on how to do deploy the database
       // when publishing your application.
-      /*private static void EnsureDatabaseCreated(ApplicationDbContext context)
+      private static void EnsureDatabaseCreated(StockSimDbContext context)
       {
          if (!_databaseChecked)
          {
             _databaseChecked = true;
-            context.Database.Migrate();
+            context.Database.EnsureCreated();
          }
-      }*/
+      }
 
       private void AddErrors(IdentityResult result)
       {
