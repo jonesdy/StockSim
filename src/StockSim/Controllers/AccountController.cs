@@ -2,10 +2,10 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.Data.Entity;
 using StockSim.Data.Access;
 using StockSim.Data.Transfer;
 using StockSim.Models;
+using StockSim.Services;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -18,8 +18,8 @@ namespace StockSim.Controllers
    {
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
-      //private readonly IEmailSender _emailSender;
-      //private readonly ISmsSender _smsSender;
+      private readonly IEmailSender _emailSender;
+      private readonly ISmsSender _smsSender;
       private readonly StockSimDbContext _identityDbContext;
       private static bool _databaseChecked;
 
@@ -337,7 +337,7 @@ namespace StockSim.Controllers
 
       //
       // GET: /Account/SendCode
-      /*[HttpGet]
+      [HttpGet]
       [AllowAnonymous]
       public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
       {
@@ -433,7 +433,7 @@ namespace StockSim.Controllers
             ModelState.AddModelError("", "Invalid code.");
             return View(model);
          }
-      }*/
+      }
 
       // The following code creates the database and schema if they don't exist.
       // This is a temporary workaround since deploying database through EF migrations is
