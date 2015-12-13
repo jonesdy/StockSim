@@ -19,21 +19,18 @@ namespace StockSim.Controllers
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
       private readonly IEmailSender _emailSender;
-      private readonly ISmsSender _smsSender;
       private readonly StockSimDbContext _identityDbContext;
       private static bool _databaseChecked;
 
       public AccountController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          /*IEmailSender emailSender,
-          ISmsSender smsSender,*/
+          IEmailSender emailSender,
           StockSimDbContext identityDbContext)
       {
          _userManager = userManager;
          _signInManager = signInManager;
-         //_emailSender = emailSender;
-         //_smsSender = smsSender;
+         _emailSender = emailSender;
          _identityDbContext = identityDbContext;
       }
 
@@ -60,7 +57,7 @@ namespace StockSim.Controllers
          {
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                return RedirectToLocal(returnUrl);
@@ -105,7 +102,7 @@ namespace StockSim.Controllers
          {
             var user = new ApplicationUser
             {
-               UserName = model.Email,
+               UserName = model.Username,
                Email = model.Email,
                SecurityStamp = Guid.NewGuid().ToString(),
             };
@@ -114,10 +111,10 @@ namespace StockSim.Controllers
             {
                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                // Send an email with this link
-               //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-               //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-               //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-               //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
+               var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+               var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+               await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                   "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
                await _signInManager.SignInAsync(user, isPersistent: false);
                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
@@ -377,14 +374,7 @@ namespace StockSim.Controllers
          }
 
          var message = "Your security code is: " + code;
-         if (model.SelectedProvider == "Email")
-         {
-            await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
-         }
-         else if (model.SelectedProvider == "Phone")
-         {
-            await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
-         }
+         await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
 
          return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
       }

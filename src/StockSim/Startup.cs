@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using StockSim.Data.Access;
 using StockSim.Data.Transfer;
+using StockSim.Services;
 
 namespace StockSim
 {
@@ -35,6 +36,8 @@ namespace StockSim
             .AddDefaultTokenProviders();
          services.AddMvc();
          services.AddLogging();
+
+         services.AddTransient<IEmailSender, AuthMessageSender>();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
