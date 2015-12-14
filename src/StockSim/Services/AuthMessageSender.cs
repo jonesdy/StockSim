@@ -1,24 +1,47 @@
-﻿using System.Threading.Tasks;
-using MailKit.Net.Smtp;
-using MimeKit;
+﻿using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace StockSim.Services
 {
    public class AuthMessageSender : IEmailSender
    {
+      private readonly ILogger Log;
+      private const string Server = "openstocksim.com";
+      private const int Port = 25;
+
+      public AuthMessageSender(ILoggerFactory loggerFactory)
+      {
+         Log = loggerFactory.CreateLogger<AuthMessageSender>();
+      }
+
       public Task SendEmailAsync(string email, string subject, string message)
       {
-         var mimeMessage = new MimeMessage();
-         mimeMessage.From.Add(new MailboxAddress("OpenStockSim", "noreply@openstocksim.com"));
-         mimeMessage.To.Add(new MailboxAddress(email, email));
-         mimeMessage.Subject = subject;
-         mimeMessage.Body = new TextPart("plain") { Text = message };
-         using(var client = new SmtpClient())
+         using (var client = new TcpClient())
          {
-            client.Connect("openstocksim.com", 587, false);
-            client.AuthenticationMechanisms.Remove("XOAUTH2");
-            client.Send(mimeMessage);
-            client.Disconnect(true);
+            var connect = client.ConnectAsync(Server, Port);
+            connect.Wait();
+            using (var stream = client.GetStream())
+            {
+               using (var reader = new StreamReader(stream))
+               {
+                  using (var writer = new StreamWriter(stream) { AutoFlush = true })
+                  {
+                     writer.WriteLine(string.Format("HELO {0}", Server));
+                     writer.WriteLine("MAIL FROM: <noreply@openstocksim.com>");
+                     writer.WriteLine(string.Format("RCPT TO: <{0}>", email));
+                     writer.WriteLine("DATA");
+                     writer.WriteLine("From: <noreply@openstocksim.com>");
+                     writer.WriteLine(string.Format("To: <{0}>", email));
+                     writer.WriteLine(string.Format("Subject: {0}", subject));
+                     writer.WriteLine();
+                     writer.WriteLine(message);
+                     writer.WriteLine(".");
+                     writer.WriteLine("QUIT");
+                  }
+               }
+            }
          }
          return Task.FromResult(0);
       }
