@@ -1,0 +1,42 @@
+﻿@{ 
+   ViewData["Title"] = "Get Quote!";
+}
+
+<script src="~/js/StockQuoteGetQuote.js"></script>
+
+<h2>@ViewData["Title"]</h2>
+
+<label for="symbol">Symbol:</label>
+<input type="text" name="symbol" id="symbol" />
+<button type="button" id="submitBtn">Submit</button>
+
+<div id="resultDiv" style="display: none">
+   <h3>Symbol: <span id="symbolResult"></span></h3>
+   <h3>Name: <span id="nameResult"></span></h3>
+   <h3>Cost: <span id="costResult"></span></h3>
+</div>
+
+<div id="errorDiv" style="display: none">
+   <span id="errorText"></span>
+</div>
+
+<br/>
+<br/>
+
+<p>
+   Warning - If you are stupid enough to depend on this being an up to date and real stock quote, it's not my fault.
+</p>
+<p>
+   This data is supposed to be up to date, but I cannot guarantee anything and hold no liability for what you use this information for.
+</p>
+
+@section Scripts{
+<script>
+   $(document).ready(function () {
+      var page = StockQuoteGetQuote({
+         getQuoteUrl: "@Url.Action("GetStockQuoteBySymbol")?symbol="
+      });
+      page.init();
+   });
+</script>
+}

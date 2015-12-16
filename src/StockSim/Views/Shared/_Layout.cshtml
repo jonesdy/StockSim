@@ -22,6 +22,7 @@
             <div class="navbar-collapse collapse">
                <ul class="nav navbar-nav">
                   <li><a href="/">Home</a></li>
+                  <li><a href="/StockQuote/GetQuote">Get Quote</a></li>
                </ul>
                @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -31,7 +32,10 @@
          @RenderBody()
          <hr />
          <footer>
-            <p>&copy; @DateTime.Now.Year - Open Stock Sim</p>
+            <p>
+               &copy; @DateTime.Now.Year - Open Stock Sim
+               <a href="https://www.yahoo.com/?ilc=401" target="_blank" class="pull-right"> <img src="https://poweredby.yahoo.com/purple.png" width="134" height="29" /> </a>
+            </p>
          </footer>
       </div>
 
@@ -41,6 +45,6 @@
       <script src="https://ajax.aspnetcdn.com/ajax/bootstrap-touch-carousel/0.8.0/js/bootstrap-touch-carousel.js"></script>
       <script src="~/js/site.js" asp-append-version="true"></script>
 
-      @RenderSection("scripts", false)
+      @RenderSection("Scripts", false)
    </body>
 </html>
