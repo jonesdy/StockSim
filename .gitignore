@@ -1,5 +1,5 @@
-*.war
-*.class
-*.swp
-*.swo
-/target
+obj/
+bin/
+stocksim.db
+project.lock.json
+*.suo
