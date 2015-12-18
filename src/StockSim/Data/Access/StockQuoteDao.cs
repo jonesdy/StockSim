@@ -13,11 +13,11 @@ namespace StockSim.Data.Access
       private const string NameTag = "Name";
       private const string SymbolTag = "Symbol";
       private const string CostTag = "LastTradePriceOnly";
-      private readonly ILogger Log;
+      private readonly ILogger _log;
 
       public StockQuoteDao(ILoggerFactory loggerFactory)
       {
-         Log = loggerFactory.CreateLogger<StockQuoteDao>();
+         _log = loggerFactory.CreateLogger<StockQuoteDao>();
       }
 
       public StockQuoteDto GetStockQuoteBySymbol(string symbol)
@@ -41,8 +41,8 @@ namespace StockSim.Data.Access
          }
          catch (Exception e)
          {
-            Log.LogError(e.Message);
-            Log.LogError(e.StackTrace);
+            _log.LogError(e.Message);
+            _log.LogError(e.StackTrace);
             throw;
          }
       }

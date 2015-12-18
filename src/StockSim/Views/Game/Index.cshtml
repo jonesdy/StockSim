@@ -1,0 +1,46 @@
+﻿@using Newtonsoft.Json
+@model ViewGamesModel
+
+@{ 
+   ViewData["Title"] = "View Games";
+}
+
+<script src="~/js/GameIndex.js"></script>
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Public Games</h3>
+<div class="list-group">
+   @foreach (var publicGame in Model.PublicGames)
+   {
+      <a href="#" class="list-group-item">
+         <span class="badge">11</span>
+         @publicGame.Title
+      </a>
+   }
+</div>
+
+<br />
+<br />
+
+<h3>Your Games</h3>
+<div class="list-group">
+   @foreach (var userGame in Model.UserGames)
+   {
+      <a href="#" class="list-group-item">
+         <span class="badge">10</span>
+         @userGame.Title
+      </a>
+   }
+</div>
+
+@section Scripts {
+   <script>
+      $(document).ready(function () {
+         var page = GameIndex({
+            games: @Html.Raw(JsonConvert.SerializeObject(Model))
+            });
+         page.init();
+      })
+   </script>
+}

@@ -1,10 +1,11 @@
-﻿using StockSim.Data.Transfer;
+﻿using StockSim.Data.Access.Interface;
+using StockSim.Data.Transfer;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace StockSim.Data.Access
 {
-   public class GameDao
+   public class GameDao : IGameDao
    {
       public void InsertGame(GameDto game)
       {
@@ -28,15 +29,7 @@ namespace StockSim.Data.Access
       {
          using (var db = new StockSimDbContext())
          {
-            return db.GameDtos.Where(x => !x.Private);
-         }
-      }
-
-      public IEnumerable<GameDto> SelectGamesByTitle(string title)
-      {
-         using (var db = new StockSimDbContext())
-         {
-            return db.GameDtos.Where(x => x.Title == title);
+            return db.GameDtos.Where(x => !x.Private).ToList();
          }
       }
 
@@ -54,7 +47,7 @@ namespace StockSim.Data.Access
                        StartingMoney = game.StartingMoney,
                        Private = game.Private,
                        StartTimestamp = game.StartTimestamp
-                    });
+                    }).ToList();
          }
       }
 

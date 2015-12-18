@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -7,13 +8,14 @@ namespace StockSim.Services
 {
    public class AuthMessageSender : IEmailSender
    {
-      private readonly ILogger Log;
+      private readonly ILogger _log;
       private const string Server = "openstocksim.com";
       private const int Port = 25;
+      private const string OkResponse = "250";
 
       public AuthMessageSender(ILoggerFactory loggerFactory)
       {
-         Log = loggerFactory.CreateLogger<AuthMessageSender>();
+         _log = loggerFactory.CreateLogger<AuthMessageSender>();
       }
 
       public Task SendEmailAsync(string email, string subject, string message)
@@ -32,6 +34,11 @@ namespace StockSim.Services
                      writer.WriteLine("MAIL FROM: <noreply@openstocksim.com>");
                      writer.WriteLine(string.Format("RCPT TO: <{0}>", email));
                      writer.WriteLine("DATA");
+                     var input = reader.ReadLine();
+                     if (!input.StartsWith(OkResponse))
+                     {
+                        throw new InvalidOperationException($"Failed to send email. Response from email server: {input}");
+                     }
                      writer.WriteLine("From: <noreply@openstocksim.com>");
                      writer.WriteLine(string.Format("To: <{0}>", email));
                      writer.WriteLine(string.Format("Subject: {0}", subject));

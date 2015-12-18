@@ -40,6 +40,7 @@ namespace StockSim
 
          services.AddTransient<IEmailSender, AuthMessageSender>();
          services.AddTransient<IStockQuoteDao, StockQuoteDao>();
+         services.AddTransient<IGameDao, GameDao>();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
