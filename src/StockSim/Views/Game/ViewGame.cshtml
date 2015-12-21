@@ -1,0 +1,12 @@
+﻿@using StockSim.Models.Game
+@model GameViewModel
+
+@{ 
+   ViewData["Title"] = "View Game - " + Model.Title;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Title: @Model.Title</h3>
+<h3>Starting Money: @Model.StartingMoney.ToString("C")</h3>
+<h3>Player Count: @Model.PlayerCount</h3>

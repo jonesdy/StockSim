@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 
-namespace StockSim.Models
+namespace StockSim.Models.Home
 {
    public class IndexViewModel
-    {
+   {
       public bool HasPassword { get; set; }
 
       public IList<UserLoginInfo> Logins { get; set; }

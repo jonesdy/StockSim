@@ -4,8 +4,8 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using StockSim.Data.Access;
 using StockSim.Data.Transfer;
-using StockSim.Models;
-using StockSim.Services;
+using StockSim.Models.Account;
+using StockSim.Services.Interface;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -18,14 +18,14 @@ namespace StockSim.Controllers
    {
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
-      private readonly IEmailSender _emailSender;
+      private readonly IEmailService _emailSender;
       private readonly StockSimDbContext _identityDbContext;
       private static bool _databaseChecked;
 
       public AccountController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          IEmailSender emailSender,
+          IEmailService emailSender,
           StockSimDbContext identityDbContext)
       {
          _userManager = userManager;

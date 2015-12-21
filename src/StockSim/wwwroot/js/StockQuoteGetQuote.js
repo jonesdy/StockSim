@@ -14,6 +14,10 @@
 
    var config = $.extend(defaults, conf);
 
+   var toDollars = function (value) {
+      return "$" + value.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+   }
+
    var init = function () {
       $symbol.keydown(function (key) {
          $resultDiv.hide();
@@ -31,7 +35,7 @@
                $errorDiv.hide();
                $symbolResult.text(data.Symbol);
                $nameResult.text(data.Name);
-               $costResult.text("$" + data.Cost);
+               $costResult.text(toDollars(data.Cost));
                $resultDiv.show();
             },
             error: function (xhr, options, error) {

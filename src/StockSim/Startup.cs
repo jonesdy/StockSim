@@ -9,6 +9,7 @@ using StockSim.Data.Access;
 using StockSim.Data.Access.Interface;
 using StockSim.Data.Transfer;
 using StockSim.Services;
+using StockSim.Services.Interface;
 
 namespace StockSim
 {
@@ -38,9 +39,13 @@ namespace StockSim
          services.AddMvc();
          services.AddLogging();
 
-         services.AddTransient<IEmailSender, AuthMessageSender>();
+         // DAOs
          services.AddTransient<IStockQuoteDao, StockQuoteDao>();
          services.AddTransient<IGameDao, GameDao>();
+
+         // Services
+         services.AddTransient<IEmailService, EmailService>();
+         services.AddTransient<IGamesService, GamesService>();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

@@ -2,7 +2,8 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using StockSim.Data.Transfer;
-using StockSim.Models;
+using StockSim.Models.Home;
+using StockSim.Models.Manage;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;

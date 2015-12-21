@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StockSim.Models
+namespace StockSim.Models.Account
 {
    public class LoginViewModel
    {

@@ -1,0 +1,34 @@
+﻿@using Newtonsoft.Json
+@using StockSim.Models.Game
+@model ViewGamesViewModel
+
+@{ 
+   ViewData["Title"] = "View Games";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Public Games</h3>
+<div class="list-group">
+   @foreach (var publicGame in Model.PublicGames)
+   {
+      <a href="@Url.Action("ViewGame")?gid=@publicGame.Gid" class="list-group-item">
+         <span class="badge">@publicGame.PlayerCount</span>
+         @publicGame.Title
+      </a>
+   }
+</div>
+
+<br />
+<br />
+
+<h3>Your Games</h3>
+<div class="list-group">
+   @foreach (var userGame in Model.UserGames)
+   {
+      <a href="@Url.Action("ViewGame")?gid=@userGame.Gid" class="list-group-item">
+         <span class="badge">@userGame.PlayerCount</span>
+         @userGame.Title
+      </a>
+   }
+</div>

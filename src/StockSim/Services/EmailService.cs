@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using StockSim.Services.Interface;
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -6,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace StockSim.Services
 {
-   public class AuthMessageSender : IEmailSender
+   public class EmailService : IEmailService
    {
       private readonly ILogger _log;
       private const string Server = "openstocksim.com";
       private const int Port = 25;
       private const string OkResponse = "250";
 
-      public AuthMessageSender(ILoggerFactory loggerFactory)
+      public EmailService(ILoggerFactory loggerFactory)
       {
-         _log = loggerFactory.CreateLogger<AuthMessageSender>();
+         _log = loggerFactory.CreateLogger<EmailService>();
       }
 
       public Task SendEmailAsync(string email, string subject, string message)

@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
-using StockSim.Data.Access.Interface;
-using StockSim.Data.Transfer;
-using StockSim.Models;
+using StockSim.Models.Game;
+using StockSim.Services.Interface;
 using System.Collections.Generic;
 
 namespace StockSim.Controllers
 {
    public class GameController : Controller
    {
-      private readonly IGameDao _gameDao;
       private readonly ILogger _log;
+      private readonly IGamesService _gamesService;
 
-      public GameController(ILoggerFactory loggerFactory, IGameDao gameDao)
+      public GameController(ILoggerFactory loggerFactory, IGamesService gamesService)
       {
-         _gameDao = gameDao;
          _log = loggerFactory.CreateLogger<GameController>();
+
+         _gamesService = gamesService;
       }
 
       [HttpGet]
@@ -26,13 +26,31 @@ namespace StockSim.Controllers
          _log.LogInformation(string.Format("Is authenticated: {0}", User.Identity.IsAuthenticated));
          _log.LogInformation(string.Format("Authentication type: {0}", User.Identity.AuthenticationType));*/
 
-         return View(new ViewGamesModel
+         return ViewGames();
+      }
+
+      [HttpGet]
+      public IActionResult ViewGames()
+      {
+         return View("ViewGames", new ViewGamesViewModel
          {
-            PublicGames = _gameDao.SelectPublicGames() ?? new List<GameDto>(),
+            PublicGames = _gamesService.GetPublicGames(),
             UserGames = User.Identity.IsAuthenticated ?
-               (_gameDao.SelectGamesByUsername(User.Identity.Name) ?? new List<GameDto>())
-               : new List<GameDto>()
+               _gamesService.GetGamesByUsername(User.Identity.Name)
+               : new List<GameViewModel>()
          });
       }
+
+      [HttpGet]
+      public IActionResult ViewGame(int gid)
+      {
+         return View(_gamesService.GetGameByGid(gid));
+      }
+
+      /*[HttpGet]
+      public IActionResult NewGame()
+      {
+         return View();
+      }*/
    }
 }

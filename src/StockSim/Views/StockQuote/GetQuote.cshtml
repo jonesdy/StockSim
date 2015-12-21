@@ -1,8 +1,6 @@
-﻿@{ 
+﻿@{
    ViewData["Title"] = "Get Quote!";
 }
-
-<script src="~/js/StockQuoteGetQuote.js"></script>
 
 <h2>@ViewData["Title"]</h2>
 
@@ -20,8 +18,8 @@
    <span id="errorText"></span>
 </div>
 
-<br/>
-<br/>
+<br />
+<br />
 
 <p>
    Warning - If you are stupid enough to depend on this being an up to date and real stock quote, it's not my fault.
@@ -31,12 +29,13 @@
 </p>
 
 @section Scripts {
-<script>
-   $(document).ready(function () {
-      var page = StockQuoteGetQuote({
-         getQuoteUrl: "@Url.Action("GetStockQuoteBySymbol")?symbol="
+   <script src="~/js/StockQuoteGetQuote.js"></script>
+   <script>
+      $(document).ready(function () {
+         var page = StockQuoteGetQuote({
+            getQuoteUrl: "@Url.Action("GetStockQuoteBySymbol")?symbol="
+         });
+         page.init();
       });
-      page.init();
-   });
-</script>
+   </script>
 }

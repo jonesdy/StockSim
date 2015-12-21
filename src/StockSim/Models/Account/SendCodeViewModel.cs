@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace StockSim.Models
+namespace StockSim.Models.Account
 {
    public class SendCodeViewModel
    {
