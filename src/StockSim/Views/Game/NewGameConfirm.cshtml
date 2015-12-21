@@ -1,0 +1,18 @@
+﻿@model int?
+
+@{ 
+   ViewData["Title"] = "New Game Confirmation";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if(Model == null)
+{
+   <div class="alert alert-danger" role="alert">There was an error, or a game with the same title already exists</div>
+   <p>Click <a href="@Url.Action("NewGame")">here</a> to try again</p>
+}
+else
+{
+   <div class="alert alert-success" role="alert">Game created successfully!</div>
+   <p>Click <a href="@Url.Action("ViewGame")?gid=@Model">here</a> to view it</p>
+}

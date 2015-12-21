@@ -7,13 +7,15 @@ namespace StockSim.Data.Access
 {
    public class GameDao : IGameDao
    {
-      public void InsertGame(GameDto game)
+      public GameDto InsertGame(GameDto game)
       {
          using (var db = new StockSimDbContext())
          {
-            db.GameDtos.Add(game);
+            var ret = db.GameDtos.Add(game);
 
             db.SaveChanges();
+
+            return ret.Entity;
          }
       }
 
@@ -56,6 +58,14 @@ namespace StockSim.Data.Access
          using (var db = new StockSimDbContext())
          {
             return db.PlayerDtos.Count(x => x.Gid == id);
+         }
+      }
+
+      public GameDto SelectGameByTitle(string title)
+      {
+         using(var db = new StockSimDbContext())
+         {
+            return db.GameDtos.FirstOrDefault(x => x.Title == title);
          }
       }
    }

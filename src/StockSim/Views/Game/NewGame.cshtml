@@ -1,0 +1,38 @@
+﻿@using StockSim.Models.Game
+@model NewGameViewModel
+
+@{ 
+   ViewData["Title"] = "New Game";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Game" asp-action="NewGame" method="post" class="form-horizontal" role="form">
+   <div class="form-group">
+      <label asp-for="Title" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+         <input asp-for="Title" class="form-control"/>
+         <span asp-validation-for="Title" class="text-danger"></span>
+      </div>
+   </div>
+   <div class="form-group">
+      <label asp-for="StartingMoney" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+         <input asp-for="StartingMoney" class="form-control"/>
+         <span asp-validation-for="StartingMoney" class="text-danger"></span>
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+         <div class="checkbox">
+            <input asp-for="Private"/>
+            <label asp-for="Private"></label>
+         </div>
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+         <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+   </div>
+</form>

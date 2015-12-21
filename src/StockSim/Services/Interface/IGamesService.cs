@@ -8,5 +8,7 @@ namespace StockSim.Services.Interface
       IEnumerable<GameViewModel> GetPublicGames();
       IEnumerable<GameViewModel> GetGamesByUsername(string username);
       GameViewModel GetGameByGid(int gid);
+      GameViewModel AddNewGame(NewGameViewModel newGame);
+      GameViewModel GetGameByTitle(string title);
    }
 }

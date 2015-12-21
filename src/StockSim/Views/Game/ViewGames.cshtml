@@ -32,3 +32,13 @@
       </a>
    }
 </div>
+
+<br/>
+<br/>
+
+@if (User.Identity.IsAuthenticated)
+{
+   <form action="@Url.Action("NewGame")">
+      <button type="submit" class="btn btn-default">Create New Game</button>
+   </form>
+}

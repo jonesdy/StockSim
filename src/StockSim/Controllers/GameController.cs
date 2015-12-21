@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StockSim.Models.Game;
 using StockSim.Services.Interface;
+using System;
 using System.Collections.Generic;
 
 namespace StockSim.Controllers
@@ -26,13 +27,13 @@ namespace StockSim.Controllers
          _log.LogInformation(string.Format("Is authenticated: {0}", User.Identity.IsAuthenticated));
          _log.LogInformation(string.Format("Authentication type: {0}", User.Identity.AuthenticationType));*/
 
-         return ViewGames();
+         return RedirectToAction("ViewGames");
       }
 
       [HttpGet]
       public IActionResult ViewGames()
       {
-         return View("ViewGames", new ViewGamesViewModel
+         return View(new ViewGamesViewModel
          {
             PublicGames = _gamesService.GetPublicGames(),
             UserGames = User.Identity.IsAuthenticated ?
@@ -47,10 +48,41 @@ namespace StockSim.Controllers
          return View(_gamesService.GetGameByGid(gid));
       }
 
-      /*[HttpGet]
+      [HttpGet]
       public IActionResult NewGame()
       {
-         return View();
-      }*/
+         if (User.Identity.IsAuthenticated)
+         {
+            return View(new NewGameViewModel());
+         }
+         return RedirectToAction("ViewGames");
+      }
+
+      [HttpPost]
+      public IActionResult NewGame(NewGameViewModel newGame)
+      {
+         if (!User.Identity.IsAuthenticated)
+         {
+            // The user should only get into this if they are messing with stuff
+            return RedirectToAction("ViewGames");
+         }
+
+         try
+         {
+            var game = _gamesService.AddNewGame(newGame);
+            return RedirectToAction("NewGameConfirm", new { gid = game.Gid });
+         }
+         catch(Exception e)
+         {
+            _log.LogError($"{e.Message}\n{e.StackTrace}");
+         }
+         return RedirectToAction("NewGameConfirm", null);
+      }
+
+      [HttpGet]
+      public IActionResult NewGameConfirm(int? gid)
+      {
+         return View(gid);
+      }
    }
 }

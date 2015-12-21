@@ -16,11 +16,12 @@ namespace StockSim.Migrations
                 Private = table.Column<bool>(nullable: false),
                 StartTimestamp = table.Column<DateTime>(nullable: false),
                 StartingMoney = table.Column<decimal>(nullable: false),
-                Title = table.Column<string>(nullable: true)
+                Title = table.Column<string>(nullable: false)
              },
              constraints: table =>
              {
                 table.PrimaryKey("PK_GameDto", x => x.Gid);
+                table.UniqueConstraint("PK_UniqueTitle", x => x.Title);
              });
          migrationBuilder.CreateTable(
              name: "Player",
@@ -33,7 +34,7 @@ namespace StockSim.Migrations
                 Gid = table.Column<int>(nullable: false),
                 InviteCode = table.Column<string>(nullable: true),
                 IsAdmin = table.Column<bool>(nullable: false),
-                Username = table.Column<string>(nullable: true)
+                Username = table.Column<string>(nullable: false)
              },
              constraints: table =>
              {
@@ -47,7 +48,7 @@ namespace StockSim.Migrations
                      .Annotation("Sqlite:Autoincrement", true),
                 Count = table.Column<int>(nullable: false),
                 Pid = table.Column<int>(nullable: false),
-                TickerSymbol = table.Column<string>(nullable: true)
+                TickerSymbol = table.Column<string>(nullable: false)
              },
              constraints: table =>
              {
