@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StockSim.Services.Interface
 {
-   public interface IGamesService
+   public interface IGameService
    {
       IEnumerable<GameViewModel> GetPublicGames();
       IEnumerable<GameViewModel> GetGamesByUsername(string username);

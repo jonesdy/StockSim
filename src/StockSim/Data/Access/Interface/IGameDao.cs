@@ -6,10 +6,9 @@ namespace StockSim.Data.Access.Interface
    public interface IGameDao
    {
       GameDto InsertGame(GameDto game);
-      GameDto SelectGameById(int id);
-      IEnumerable<GameDto> SelectPublicGames();
-      IEnumerable<GameDto> SelectGamesByUsername(string username);
-      int SelectPlayerCountFromGameById(int id);
+      GameDto SelectGameByGid(int gid);
+      IList<GameDto> SelectPublicGames();
+      IList<GameDto> SelectGamesByUsername(string username);
       GameDto SelectGameByTitle(string title);
    }
 }

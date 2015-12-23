@@ -8,13 +8,15 @@ using System.Linq;
 
 namespace StockSim.Services
 {
-   public class GamesService : IGamesService
+   public class GameService : IGameService
    {
       private readonly IGameDao _gameDao;
+      private readonly IPlayerDao _playerDao;
 
-      public GamesService(IGameDao gameDao)
+      public GameService(IGameDao gameDao, IPlayerDao playerDao)
       {
          _gameDao = gameDao;
+         _playerDao = playerDao;
       }
 
       public IEnumerable<GameViewModel> GetPublicGames()
@@ -24,7 +26,7 @@ namespace StockSim.Services
             Gid = x.Gid,
             Title = x.Title,
             Private = x.Private,
-            PlayerCount = _gameDao.SelectPlayerCountFromGameById(x.Gid),
+            PlayerCount = _playerDao.SelectPlayerCountByGid(x.Gid),
             StartingMoney = x.StartingMoney
          });
       }
@@ -36,20 +38,20 @@ namespace StockSim.Services
             Gid = x.Gid,
             Title = x.Title,
             Private = x.Private,
-            PlayerCount = _gameDao.SelectPlayerCountFromGameById(x.Gid),
+            PlayerCount = _playerDao.SelectPlayerCountByGid(x.Gid),
             StartingMoney = x.StartingMoney
          });
       }
 
       public GameViewModel GetGameByGid(int gid)
       {
-         var dto = _gameDao.SelectGameById(gid);
+         var dto = _gameDao.SelectGameByGid(gid);
          return new GameViewModel
          {
             Gid = dto.Gid,
             Title = dto.Title,
             Private = dto.Private,
-            PlayerCount = _gameDao.SelectPlayerCountFromGameById(dto.Gid),
+            PlayerCount = _playerDao.SelectPlayerCountByGid(dto.Gid),
             StartingMoney = dto.StartingMoney
          };
       }
@@ -84,7 +86,7 @@ namespace StockSim.Services
             Gid = dto.Gid,
             Title = dto.Title,
             Private = dto.Private,
-            PlayerCount = _gameDao.SelectPlayerCountFromGameById(dto.Gid),
+            PlayerCount = _playerDao.SelectPlayerCountByGid(dto.Gid),
             StartingMoney = dto.StartingMoney
          };
       }

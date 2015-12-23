@@ -19,15 +19,15 @@ namespace StockSim.Data.Access
          }
       }
 
-      public GameDto SelectGameById(int id)
+      public GameDto SelectGameByGid(int gid)
       {
          using (var db = new StockSimDbContext())
          {
-            return db.GameDtos.Where(x => x.Gid == id).FirstOrDefault();
+            return db.GameDtos.FirstOrDefault(x => x.Gid == gid);
          }
       }
 
-      public IEnumerable<GameDto> SelectPublicGames()
+      public IList<GameDto> SelectPublicGames()
       {
          using (var db = new StockSimDbContext())
          {
@@ -35,7 +35,7 @@ namespace StockSim.Data.Access
          }
       }
 
-      public IEnumerable<GameDto> SelectGamesByUsername(string username)
+      public IList<GameDto> SelectGamesByUsername(string username)
       {
          using (var db = new StockSimDbContext())
          {
@@ -50,14 +50,6 @@ namespace StockSim.Data.Access
                        Private = game.Private,
                        StartTimestamp = game.StartTimestamp
                     }).ToList();
-         }
-      }
-
-      public int SelectPlayerCountFromGameById(int id)
-      {
-         using (var db = new StockSimDbContext())
-         {
-            return db.PlayerDtos.Count(x => x.Gid == id);
          }
       }
 

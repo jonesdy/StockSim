@@ -10,3 +10,8 @@
 <h3>Title: @Model.Title</h3>
 <h3>Starting Money: @Model.StartingMoney.ToString("C")</h3>
 <h3>Player Count: @Model.PlayerCount</h3>
+
+@if (ViewBag.UserCanJoin)
+{
+   <a href="@Url.Action("JoinGame")?gid=@Model.Gid" class="btn btn-default" role="button">Join Game</a>
+}

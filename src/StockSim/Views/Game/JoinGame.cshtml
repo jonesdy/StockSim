@@ -1,0 +1,18 @@
+﻿@model int?
+
+@{ 
+   ViewData["Title"] = "Join Game";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if(Model == null)
+{
+   <div class="alert alert-danger" role="alert">There was an error, the game does not exist, you are already in the game, or you are not allowed to join this game!</div>
+   <p>Click <a href="@Url.Action("ViewGames")">here</a> to return to the games</p>
+}
+else
+{
+   <div class="alert alert-success" role="alert">Joined game successfully!</div>
+   <p>Click <a href="@Url.Action("ViewGame")?gid=@Model">here</a> to view the game</p>
+}
