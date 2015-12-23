@@ -15,7 +15,7 @@
 {
    <a href="@Url.Action("JoinGame")?gid=@Model.Gid" class="btn btn-default" role="button">Join Game</a>
 }
-else
+else if(User.Identity.IsAuthenticated)
 {
    <a href="@Url.Action("LeaveGame")?gid=@Model.Gid" class="btn btn-danger" role="button">Leave Game</a>
 }
