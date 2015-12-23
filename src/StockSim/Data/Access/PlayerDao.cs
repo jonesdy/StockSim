@@ -34,5 +34,20 @@ namespace StockSim.Data.Access
             return player != null;
          }
       }
+
+      public bool DeletePlayerByGidAndUsername(int gid, string username)
+      {
+         using (var db = new StockSimDbContext())
+         {
+            var player = db.PlayerDtos.FirstOrDefault(x => x.Gid == gid && x.Username == username);
+            if(player != null)
+            {
+               db.PlayerDtos.Remove(player);
+               db.SaveChanges();
+               return true;
+            }
+         }
+         return false;
+      }
    }
 }

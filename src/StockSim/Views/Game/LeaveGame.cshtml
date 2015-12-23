@@ -1,0 +1,17 @@
+﻿@model bool
+@{ 
+   ViewData["Title"] = "Leave Game";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model)
+{
+   <div class="alert alert-success" role="alert">Game left successfully</div>
+   <p>Click <a href="@Url.Action("ViewGames")">here</a> to view other games</p>
+}
+else
+{
+   <div class="alert alert-danger" role="alert">There was an error or you are not in this game!</div>
+   <p>Click <a href="@Url.Action("ViewGames")">here</a> to view other games</p>
+}

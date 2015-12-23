@@ -34,5 +34,10 @@ namespace StockSim.Services
       {
          return _playerDao.IsUserInGame(gid, username);
       }
+
+      public bool RemovePlayerFromGame(int gid, string username)
+      {
+         return _playerDao.DeletePlayerByGidAndUsername(gid, username);
+      }
    }
 }

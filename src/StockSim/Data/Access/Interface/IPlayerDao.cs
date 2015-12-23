@@ -7,5 +7,6 @@ namespace StockSim.Data.Access.Interface
       PlayerDto InsertPlayer(PlayerDto player);
       int SelectPlayerCountByGid(int gid);
       bool IsUserInGame(int gid, string username);
+      bool DeletePlayerByGidAndUsername(int gid, string username);
    }
 }

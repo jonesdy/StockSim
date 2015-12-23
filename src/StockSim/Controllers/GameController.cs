@@ -113,5 +113,28 @@ namespace StockSim.Controllers
          }
          return View(null);
       }
+
+      [HttpGet]
+      public IActionResult LeaveGame(int gid)
+      {
+         if (!User.Identity.IsAuthenticated)
+         {
+            return RedirectToAction("ViewGames");
+         }
+
+         try
+         {
+            if(!_playerService.IsUserInGame(gid, User.Identity.Name))
+            {
+               return View(false);
+            }
+            return View(_playerService.RemovePlayerFromGame(gid, User.Identity.Name));
+         }
+         catch(Exception e)
+         {
+            _log.LogError($"{e.Message}\n{e.StackTrace}");
+         }
+         return View(false);
+      }
    }
 }
