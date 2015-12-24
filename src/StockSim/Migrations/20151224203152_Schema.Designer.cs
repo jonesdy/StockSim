@@ -1,14 +1,17 @@
 using System;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Infrastructure;
+using Microsoft.Data.Entity.Metadata;
+using Microsoft.Data.Entity.Migrations;
 using StockSim.Data.Access;
 
 namespace StockSim.Migrations
 {
     [DbContext(typeof(StockSimDbContext))]
-    partial class StockSimDbContextModelSnapshot : ModelSnapshot
+    [Migration("20151224203152_Schema")]
+    partial class Schema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");

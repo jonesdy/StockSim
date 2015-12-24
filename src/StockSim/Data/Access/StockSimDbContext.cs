@@ -12,6 +12,7 @@ namespace StockSim.Data.Access
       public DbSet<PlayerDto> PlayerDtos { get; set; }
       public DbSet<StockDto> StockDtos { get; set; }
       public DbSet<TransactionDto> TransactionDtos { get; set; }
+      public DbSet<ClosedTimeDto> ClosedTimeDtos { get; set; }
 
       public static string ConnectionString
       {
