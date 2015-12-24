@@ -39,5 +39,10 @@ namespace StockSim.Services
       {
          return _playerDao.DeletePlayerByGidAndUsername(gid, username);
       }
+
+      public decimal GetPlayerBalance(int gid, string username)
+      {
+         return _playerDao.SelectPlayerByGidAndUsername(gid, username).Balance;
+      }
    }
 }

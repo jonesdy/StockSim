@@ -49,5 +49,24 @@ namespace StockSim.Data.Access
          }
          return false;
       }
+
+      public PlayerDto SelectPlayerByGidAndUsername(int gid, string username)
+      {
+         using (var db = new StockSimDbContext())
+         {
+            return db.PlayerDtos.FirstOrDefault(x => x.Gid == gid && x.Username == username);
+         }
+      }
+
+      public decimal UpdateBalanceByPid(int pid, decimal balance)
+      {
+         using (var db = new StockSimDbContext())
+         {
+            var existing = db.PlayerDtos.First(x => x.Pid == pid);
+            existing.Balance = balance;
+            db.SaveChanges();
+            return db.PlayerDtos.First(x => x.Pid == pid).Balance;
+         }
+      }
    }
 }

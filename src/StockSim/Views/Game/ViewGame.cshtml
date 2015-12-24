@@ -1,21 +1,45 @@
 ﻿@using StockSim.Models.Game
-@model GameViewModel
+@model ViewGameViewModel
 
-@{ 
-   ViewData["Title"] = "View Game - " + Model.Title;
+@{
+   ViewData["Title"] = "View Game - " + Model.Game.Title;
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<h3>Title: @Model.Title</h3>
-<h3>Starting Money: @Model.StartingMoney.ToString("C")</h3>
-<h3>Player Count: @Model.PlayerCount</h3>
+<p>
+   <h3>Starting Money: @Model.Game.StartingMoney.ToString("C") - Player Count: @Model.Game.PlayerCount</h3>
+</p>
 
-@if (ViewBag.UserCanJoin)
+@if(Model.UserCanJoin)
 {
-   <a href="@Url.Action("JoinGame")?gid=@Model.Gid" class="btn btn-default" role="button">Join Game</a>
+   <p>
+      <a href="@Url.Action("JoinGame")?gid=@Model.Game.Gid" class="btn btn-default" role="button">Join Game</a>
+   </p>
 }
-else if(User.Identity.IsAuthenticated)
+else if (User.Identity.IsAuthenticated)
 {
-   <a href="@Url.Action("LeaveGame")?gid=@Model.Gid" class="btn btn-danger" role="button">Leave Game</a>
+   <br/>
+   <p>
+      <h3>Your Stocks:</h3>
+      <div class="list-group">
+         @if (!Model.PlayerStocks.Any())
+         {
+            <span class="list-group-item">You don't own any stocks!</span>
+         }
+         @foreach(var stock in Model.PlayerStocks)
+         {
+            <span class="list-group-item">@stock.TickerSymbol<span class="badge">@stock.Count</span></span>
+         }
+      </div>
+   </p>
+   <br />
+   <p>
+      <a href="@Url.Action("BuyStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Buy Stock</a>
+      <a href="@Url.Action("SellStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Sell Stock</a>
+      <a href="@Url.Action("ViewTransactions", "Transaction")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Transactions</a>
+   </p>
+   <p>
+      <a href="@Url.Action("LeaveGame")?gid=@Model.Game.Gid" class="btn btn-danger" role="button">Leave Game</a>
+   </p>
 }

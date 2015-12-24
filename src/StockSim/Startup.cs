@@ -43,11 +43,15 @@ namespace StockSim
          services.AddTransient<IStockQuoteDao, StockQuoteDao>();
          services.AddTransient<IGameDao, GameDao>();
          services.AddTransient<IPlayerDao, PlayerDao>();
+         services.AddTransient<IStockDao, StockDao>();
+         services.AddTransient<ITransactionDao, TransactionDao>();
 
          // Services
          services.AddTransient<IEmailService, EmailService>();
          services.AddTransient<IGameService, GameService>();
          services.AddTransient<IPlayerService, PlayerService>();
+         services.AddTransient<IStockService, StockService>();
+         services.AddTransient<ITransactionService, TransactionService>();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)

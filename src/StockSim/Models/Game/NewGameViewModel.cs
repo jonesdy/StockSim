@@ -9,6 +9,7 @@ namespace StockSim.Models.Game
 
       [Required]
       [DataType(DataType.Currency)]
+      [Display(Name = "Starting Money")]
       public decimal StartingMoney { get; set; }
 
       [Display(Name = "Private Game?")]

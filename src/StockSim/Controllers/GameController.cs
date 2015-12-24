@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using StockSim.Models.Game;
+using StockSim.Models.Stock;
 using StockSim.Services.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StockSim.Controllers
 {
@@ -12,13 +14,15 @@ namespace StockSim.Controllers
       private readonly ILogger _log;
       private readonly IGameService _gameService;
       private readonly IPlayerService _playerService;
+      private readonly IStockService _stockService;
 
-      public GameController(ILoggerFactory loggerFactory, IGameService gameService, IPlayerService playerService)
+      public GameController(ILoggerFactory loggerFactory, IGameService gameService, IPlayerService playerService, IStockService stockService)
       {
          _log = loggerFactory.CreateLogger<GameController>();
 
          _gameService = gameService;
          _playerService = playerService;
+         _stockService = stockService;
       }
 
       [HttpGet]
@@ -48,8 +52,17 @@ namespace StockSim.Controllers
       public IActionResult ViewGame(int gid)
       {
          var game = _gameService.GetGameByGid(gid);
-         ViewBag.UserCanJoin = User.Identity.IsAuthenticated && !_playerService.IsUserInGame(game.Gid, User.Identity.Name) && !game.Private;
-         return View(game);
+         var playerStocks = new List<StockViewModel>();
+         if (User.Identity.IsAuthenticated)
+         {
+            playerStocks.AddRange(_stockService.GetPlayerStocks(gid, User.Identity.Name).Where(x => x.Count != 0));
+         }
+         return View(new ViewGameViewModel
+         {
+            Game = game,
+            PlayerStocks = playerStocks,
+            UserCanJoin = User.Identity.IsAuthenticated && !_playerService.IsUserInGame(game.Gid, User.Identity.Name) && !game.Private
+      });
       }
 
       [HttpGet]

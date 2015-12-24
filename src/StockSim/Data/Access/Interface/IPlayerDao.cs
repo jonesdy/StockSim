@@ -8,5 +8,7 @@ namespace StockSim.Data.Access.Interface
       int SelectPlayerCountByGid(int gid);
       bool IsUserInGame(int gid, string username);
       bool DeletePlayerByGidAndUsername(int gid, string username);
+      PlayerDto SelectPlayerByGidAndUsername(int gid, string username);
+      decimal UpdateBalanceByPid(int pid, decimal balance);
    }
 }

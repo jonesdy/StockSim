@@ -1,0 +1,23 @@
+﻿@using StockSim.Models.Transaction
+@model ViewTransactionsViewModel
+
+@{
+   ViewData["Title"] = "Transactions - " + Model.GameTitle;
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="list-group">
+   <span class="list-group-item">Starting Balance <span class="pull-right"><b>@Model.StartingMoney.ToString("C")</b></span></span>
+   @foreach(var transaction in Model.Transactions.OrderBy(x => x.Timestamp))
+   {
+      @if (transaction.Buy)
+      {
+         <span class="list-group-item list-group-item-danger"><b>@transaction.TickerSymbol</b> - @transaction.Timestamp.ToString("G") <span class="pull-right"><b>@transaction.Count</b> - $@transaction.Price each <b>-@((transaction.Count * transaction.Price).ToString("C"))</b></span></span>
+      }
+      else
+      {
+         <span class="list-group-item list-group-item-success"><b>@transaction.TickerSymbol</b> - @transaction.Timestamp.ToString("G") <span class="pull-right"><b>@transaction.Count</b> - $@transaction.Price each <b>+@((transaction.Count * transaction.Price).ToString("C"))</b></span></span>
+      }
+   }
+   <span class="list-group-item">Balance <span class="pull-right"><b>$@Model.Balance</b></span></span>
+</div>

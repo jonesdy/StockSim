@@ -1,4 +1,4 @@
-﻿var StockQuoteGetQuote = function (conf) {
+﻿var GetQuote = function (conf) {
    var defaults = {
       getQuoteUrl: ""
    };

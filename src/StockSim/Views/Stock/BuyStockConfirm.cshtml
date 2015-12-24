@@ -1,0 +1,18 @@
+﻿@model int?
+
+@{ 
+   ViewData["Title"] = "Buy Stock Confirmation";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if(Model == null)
+{
+   <div class="alert alert-danger" role="alert">There was an error in buying the stock. The ticker symbol was invalid or you do not have enough money</div>
+   <p>Click <a href="@Url.Action("ViewGames", "Game")">here</a> to view the games</p>
+}
+else
+{
+   <div class="alert alert-success" role="alert">Stocks bought successfully!</div>
+   <p>Click <a href="@Url.Action("ViewGame", "Game")?gid=@Model">here</a> to view the game</p>
+}

@@ -29,10 +29,10 @@
 </p>
 
 @section Scripts {
-   <script src="~/js/StockQuoteGetQuote.js"></script>
+   <script src="~/js/StockQuote/GetQuote.js"></script>
    <script>
       $(document).ready(function () {
-         var page = StockQuoteGetQuote({
+         var page = GetQuote({
             getQuoteUrl: "@Url.Action("GetStockQuoteBySymbol")?symbol="
          });
          page.init();

@@ -1,0 +1,58 @@
+﻿@using StockSim.Models.Stock
+@model BuySellStockViewModel
+
+@{ 
+   ViewData["Title"] = "Buy Stock";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Stock" asp-action="BuyStock" method="post" class="form-horizontal" role="form">
+   <div class="form-group">
+      <label asp-for="TickerSymbol" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+         <input asp-for="TickerSymbol" class="form-control" id="tickerSymbol"/>
+         <span asp-validation-for="TickerSymbol" class="text-danger"></span>
+      </div>
+   </div>
+   <div class="form-group">
+      <label asp-for="Count" class="col-md-2 control-label"></label>
+      <div class="col-md-10">
+         <input asp-for="Count" class="form-control" min="0"/>
+         <span asp-validation-for="Count" class="text-danger"></span>
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+         <button type="submit" class="btn btn-default">Submit</button>
+      </div>
+   </div>
+   <input asp-for="Gid" type="hidden" />
+</form>
+
+<p>
+   <button class="btn btn-default" id="getQuoteBtn">Get Quote</button>
+</p>
+<div id="quoteDiv" style="display: none">
+   <p>
+      Cost: <span id="quoteCost"></span> each
+   </p>
+   <p>
+      Note that this cost could change when you submit the buy order
+   </p>
+</div>
+<div id="errorDiv" style="display: none">
+   <span id="errorText"></span>
+</div>
+
+@section Scripts {
+   <script src="~/js/Stock/BuyStock.js"></script>
+   <script>
+      $(document).ready(function () {
+         var page = BuyStock({
+            getQuoteUrl: "@Url.Action("GetStockQuoteBySymbol", "StockQuote")?symbol="
+         });
+         page.init();
+      });
+   </script>
+}
