@@ -8,5 +8,6 @@ namespace StockSim.Models.Game
       public GameViewModel Game { get; set; }
       public IList<StockViewModel> PlayerStocks { get; set; }
       public bool UserCanJoin { get; set; }
+      public decimal? Balance { get; set; }
    }
 }

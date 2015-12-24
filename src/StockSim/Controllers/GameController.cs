@@ -53,16 +53,19 @@ namespace StockSim.Controllers
       {
          var game = _gameService.GetGameByGid(gid);
          var playerStocks = new List<StockViewModel>();
+         decimal? balance = null;
          if (User.Identity.IsAuthenticated)
          {
-            playerStocks.AddRange(_stockService.GetPlayerStocks(gid, User.Identity.Name).Where(x => x.Count != 0));
+            playerStocks.AddRange(_stockService.GetPlayerStocks(gid, User.Identity.Name));
+            balance = _playerService.GetPlayerBalance(gid, User.Identity.Name);
          }
          return View(new ViewGameViewModel
          {
             Game = game,
             PlayerStocks = playerStocks,
-            UserCanJoin = User.Identity.IsAuthenticated && !_playerService.IsUserInGame(game.Gid, User.Identity.Name) && !game.Private
-      });
+            UserCanJoin = User.Identity.IsAuthenticated && !_playerService.IsUserInGame(game.Gid, User.Identity.Name) && !game.Private,
+            Balance = balance
+         });
       }
 
       [HttpGet]

@@ -8,7 +8,7 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-   <h3>Starting Money: @Model.Game.StartingMoney.ToString("C") - Player Count: @Model.Game.PlayerCount</h3>
+   <h4>Starting Money: @Model.Game.StartingMoney.ToString("C") - Player Count: @Model.Game.PlayerCount</h4>
 </p>
 
 @if(Model.UserCanJoin)
@@ -19,7 +19,6 @@
 }
 else if (User.Identity.IsAuthenticated)
 {
-   <br/>
    <p>
       <h3>Your Stocks:</h3>
       <div class="list-group">
@@ -32,6 +31,10 @@ else if (User.Identity.IsAuthenticated)
             <span class="list-group-item">@stock.TickerSymbol<span class="badge">@stock.Count</span></span>
          }
       </div>
+      @if (Model.Balance != null)
+      {
+         <h3>Current Balance: @Model.Balance.Value.ToString("C")</h3>
+      }
    </p>
    <br />
    <p>

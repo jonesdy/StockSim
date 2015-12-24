@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Mvc;
+﻿using Microsoft.AspNet.Mvc;
 using StockSim.Data.Access.Interface;
 
 namespace StockSim.Controllers
@@ -14,14 +13,6 @@ namespace StockSim.Controllers
       }
 
       [HttpGet]
-      [AllowAnonymous]
-      public IActionResult GetQuote()
-      {
-         return View();
-      }
-
-      [HttpGet]
-      [AllowAnonymous]
       public JsonResult GetStockQuoteBySymbol(string symbol)
       {
          var quote = _stockQuoteDao.GetStockQuoteBySymbol(symbol.ToUpperInvariant());

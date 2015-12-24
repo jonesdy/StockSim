@@ -10,20 +10,36 @@ namespace StockSim.Controllers
    {
       private readonly ILogger _log;
       private readonly IStockService _stockService;
+      private readonly IPlayerService _playerService;
+      private readonly IGameService _gameService;
 
-      public StockController(ILoggerFactory loggerFactory, IStockService stockService)
+      public StockController(ILoggerFactory loggerFactory, IStockService stockService, IPlayerService playerService, IGameService gameService)
       {
          _log = loggerFactory.CreateLogger<StockController>();
 
          _stockService = stockService;
+         _playerService = playerService;
+         _gameService = gameService;
       }
 
       [HttpGet]
       public IActionResult BuyStock(int gid)
       {
+         if (!User.Identity.IsAuthenticated)
+         {
+            return RedirectToAction("ViewGame", "Game");
+         }
+         if(!_playerService.IsUserInGame(gid, User.Identity.Name))
+         {
+            return RedirectToAction("ViewGame", "Game");
+         }
+
          return View(new BuySellStockViewModel
          {
-            Gid = gid
+            Gid = gid,
+            GameTitle = _gameService.GetGameByGid(gid).Title,
+            Balance = _playerService.GetPlayerBalance(gid, User.Identity.Name),
+            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name)
          });
       }
 
@@ -31,6 +47,10 @@ namespace StockSim.Controllers
       public IActionResult BuyStock(BuySellStockViewModel model)
       {
          if (!User.Identity.IsAuthenticated)
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+         if(!_playerService.IsUserInGame(model.Gid, User.Identity.Name))
          {
             return RedirectToAction("ViewGames", "Game");
          }
@@ -56,9 +76,21 @@ namespace StockSim.Controllers
       [HttpGet]
       public IActionResult SellStock(int gid)
       {
+         if (!User.Identity.IsAuthenticated)
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+         if (!_playerService.IsUserInGame(gid, User.Identity.Name))
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+
          return View(new BuySellStockViewModel
          {
-            Gid = gid
+            Gid = gid,
+            GameTitle = _gameService.GetGameByGid(gid).Title,
+            Balance = _playerService.GetPlayerBalance(gid, User.Identity.Name),
+            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name)
          });
       }
 
@@ -66,6 +98,10 @@ namespace StockSim.Controllers
       public IActionResult SellStock(BuySellStockViewModel model)
       {
          if (!User.Identity.IsAuthenticated)
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+         if (!_playerService.IsUserInGame(model.Gid, User.Identity.Name))
          {
             return RedirectToAction("ViewGames", "Game");
          }

@@ -138,7 +138,7 @@ namespace StockSim.Services
          {
             TickerSymbol = x.TickerSymbol,
             Count = x.Count
-         }).ToList();
+         }).Where(x => x.Count != 0).ToList();
       }
    }
 }

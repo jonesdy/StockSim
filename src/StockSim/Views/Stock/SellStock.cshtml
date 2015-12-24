@@ -7,6 +7,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
+<h3>Current Balance: @Model.Balance.ToString("C")</h3>
+
 <form asp-controller="Stock" asp-action="SellStock" method="post" class="form-horizontal" role="form">
    <div class="form-group">
       <label asp-for="TickerSymbol" class="col-md-2 control-label"></label>
@@ -32,6 +34,7 @@
 
 <p>
    <button class="btn btn-default" id="getQuoteBtn">Get Quote</button>
+   <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid" class="btn btn-default">Return to game</a>
 </p>
 <div id="quoteDiv" style="display: none">
    <p>
@@ -44,6 +47,20 @@
 <div id="errorDiv" style="display: none">
    <span id="errorText"></span>
 </div>
+
+<p>
+   <h3>Your Stocks:</h3>
+   <div class="list-group">
+      @if (!Model.PlayerStocks.Any())
+      {
+         <span class="list-group-item">You don't own any stocks!</span>
+      }
+      @foreach (var stock in Model.PlayerStocks)
+      {
+         <span class="list-group-item">@stock.TickerSymbol<span class="badge">@stock.Count</span></span>
+      }
+   </div>
+</p>
 
 @section Scripts {
    <script src="~/js/Stock/SellStock.js"></script>
