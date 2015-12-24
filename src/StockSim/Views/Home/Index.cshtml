@@ -1,7 +1,8 @@
 ﻿@using StockSim.Models.Home
+@model string
+
 @{
    ViewBag.Title = "Home Page";
-   string helloClass = null;
 }
 
 <div class="jumbotron">
@@ -9,6 +10,17 @@
    <p class="lead">Open Stock Sim is an open source stock simulator that is current under construction.</p>
 </div>
 <div class="row">
-   <h3 title="Test title" class="@helloClass">Hello Tester!</h3>
+   <h3>The Stock Market is currently @if (Model == null)
+   {
+      <b>open!</b>
+   }
+   else
+   {
+      <b>closed.</b>
+   }</h3>
+   @if(Model != null)
+   {
+      <h4>Closed reason: @Model</h4>
+   }
    <p>You can see the code <a href="https://github.com/jonesdy/StockSim/">here</a></p>
 </div>

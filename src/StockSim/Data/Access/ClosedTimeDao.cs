@@ -1,10 +1,11 @@
-﻿using StockSim.Data.Transfer;
+﻿using StockSim.Data.Access.Interface;
+using StockSim.Data.Transfer;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace StockSim.Data.Access
 {
-   public class ClosedTimeDao
+   public class ClosedTimeDao : IClosedTimeDao
    {
       public IList<ClosedTimeDto> SelectClosedTimes()
       {

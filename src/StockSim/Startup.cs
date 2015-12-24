@@ -45,6 +45,7 @@ namespace StockSim
          services.AddTransient<IPlayerDao, PlayerDao>();
          services.AddTransient<IStockDao, StockDao>();
          services.AddTransient<ITransactionDao, TransactionDao>();
+         services.AddTransient<IClosedTimeDao, ClosedTimeDao>();
 
          // Services
          services.AddTransient<IEmailService, EmailService>();
@@ -52,6 +53,7 @@ namespace StockSim
          services.AddTransient<IPlayerService, PlayerService>();
          services.AddTransient<IStockService, StockService>();
          services.AddTransient<ITransactionService, TransactionService>();
+         services.AddTransient<IClosedTimeService, ClosedTimeService>();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
