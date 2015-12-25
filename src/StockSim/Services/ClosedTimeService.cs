@@ -26,14 +26,9 @@ namespace StockSim.Services
             easternZone = TimeZoneInfo.FindSystemTimeZoneById("US/Eastern");
          }
          var easternTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, easternZone);
-         if(easternTime.DayOfWeek == DayOfWeek.Saturday || easternTime.DayOfWeek == DayOfWeek.Sunday)
+         if(easternTime.DayOfWeek == DayOfWeek.Saturday || easternTime.DayOfWeek == DayOfWeek.Sunday || easternTime.Hour >= 16 || easternTime.Hour < 9 || (easternTime.Hour == 9 && easternTime.Minute < 30))
          {
-            // Never open on weekends
-            return "Outside normal working hours";
-         }
-         if(easternTime.Hour >= 16 || easternTime.Hour < 9 || (easternTime.Hour == 9 && easternTime.Minute < 30))
-         {
-            // Open from 9:30 to 16:00, normally
+            // Normally open monday-friday, 9:30 to 16:00 eastern
             return "Outside normal working hours";
          }
          

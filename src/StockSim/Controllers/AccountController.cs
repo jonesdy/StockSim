@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using StockSim.Data.Access;
 using StockSim.Data.Transfer;
 using StockSim.Models.Account;
@@ -20,18 +21,21 @@ namespace StockSim.Controllers
       private readonly SignInManager<ApplicationUser> _signInManager;
       private readonly IEmailService _emailSender;
       private readonly StockSimDbContext _identityDbContext;
+      private readonly ILogger _log;
       private static bool _databaseChecked;
 
       public AccountController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IEmailService emailSender,
-          StockSimDbContext identityDbContext)
+          StockSimDbContext identityDbContext,
+          ILoggerFactory loggerFactory)
       {
          _userManager = userManager;
          _signInManager = signInManager;
          _emailSender = emailSender;
          _identityDbContext = identityDbContext;
+         _log = loggerFactory.CreateLogger<AccountController>();
       }
 
       //
@@ -113,6 +117,7 @@ namespace StockSim.Controllers
                // Send an email with this link
                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+               _log.LogInformation($"Confirm URL: {callbackUrl}");
                await _emailSender.SendEmailAsync(model.Email, "OpenStockSim - Please confirm your account",
                    string.Format("Thank you for registering at OpenStockSim!\nPlease confirm your account by clicking this link: {0}", callbackUrl));
                await _signInManager.SignInAsync(user, isPersistent: false);
@@ -243,7 +248,7 @@ namespace StockSim.Controllers
 
       //
       // GET: /Account/ForgotPassword
-      /*[HttpGet]
+      [HttpGet]
       [AllowAnonymous]
       public IActionResult ForgotPassword()
       {
@@ -268,11 +273,11 @@ namespace StockSim.Controllers
 
             // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
             // Send an email with this link
-            //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-            //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-            //   "Please reset your password by clicking here: <a href=\"" + callbackUrl + "\">link</a>");
-            //return View("ForgotPasswordConfirmation");
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+            await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+               "Please reset your password by clicking here: " + callbackUrl);
+            return View("ForgotPasswordConfirmation");
          }
 
          // If we got this far, something failed, redisplay form
@@ -330,7 +335,7 @@ namespace StockSim.Controllers
       public IActionResult ResetPasswordConfirmation()
       {
          return View();
-      }*/
+      }
 
       //
       // GET: /Account/SendCode

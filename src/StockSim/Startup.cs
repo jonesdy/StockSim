@@ -10,12 +10,14 @@ using StockSim.Data.Access.Interface;
 using StockSim.Data.Transfer;
 using StockSim.Services;
 using StockSim.Services.Interface;
+using System;
 
 namespace StockSim
 {
    public class Startup
    {
-      public IConfigurationRoot Configuration { get; private set; }
+      public static IConfigurationRoot Configuration { get; private set; }
+      public static IServiceProvider ServiceProvider { get; private set; }
 
       public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
       {
@@ -54,6 +56,7 @@ namespace StockSim
          services.AddTransient<IStockService, StockService>();
          services.AddTransient<ITransactionService, TransactionService>();
          services.AddTransient<IClosedTimeService, ClosedTimeService>();
+         ServiceProvider = services.BuildServiceProvider();
       }
 
       public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
