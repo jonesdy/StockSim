@@ -9,6 +9,7 @@ namespace StockSim.Models.Stock
       public string GameTitle { get; set; }
       public decimal Balance { get; set; }
       public IList<StockViewModel> PlayerStocks { get; set; }
+      public string ClosedReason { get; set; }
 
       [Required]
       [Display(Name = "Ticker Symbol")]

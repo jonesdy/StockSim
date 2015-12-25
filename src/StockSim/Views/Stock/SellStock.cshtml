@@ -9,31 +9,48 @@
 
 <h3>Current Balance: @Model.Balance.ToString("C")</h3>
 
-<form asp-controller="Stock" asp-action="SellStock" method="post" class="form-horizontal" role="form">
-   <div class="form-group">
-      <label asp-for="TickerSymbol" class="col-md-2 control-label"></label>
-      <div class="col-md-10">
-         <input asp-for="TickerSymbol" class="form-control" id="tickerSymbol" />
-         <span asp-validation-for="TickerSymbol" class="text-danger"></span>
-      </div>
-   </div>
-   <div class="form-group">
-      <label asp-for="Count" class="col-md-2 control-label"></label>
-      <div class="col-md-10">
-         <input asp-for="Count" class="form-control" min="0" />
-         <span asp-validation-for="Count" class="text-danger"></span>
-      </div>
-   </div>
-   <div class="form-group">
-      <div class="col-md-offset-2 col-md-10">
-         <button type="submit" class="btn btn-default">Submit</button>
-      </div>
-   </div>
-   <input asp-for="Gid" type="hidden" />
-</form>
-
+@if (Model.ClosedReason != null)
+{
+   <h4>The stock market is currently closed.</h4>
+   <h4>Closed reason: @Model.ClosedReason</h4>
+}
+else
+{
+   @if (!Model.PlayerStocks.Any())
+   {
+      <h4>You have no stocks to sell!</h4>
+   }
+   else
+   {
+      <form asp-controller="Stock" asp-action="SellStock" method="post" class="form-horizontal" role="form">
+         <div class="form-group">
+            <label asp-for="TickerSymbol" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               <input asp-for="TickerSymbol" class="form-control" id="tickerSymbol" />
+               <span asp-validation-for="TickerSymbol" class="text-danger"></span>
+            </div>
+         </div>
+         <div class="form-group">
+            <label asp-for="Count" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+               <input asp-for="Count" class="form-control" min="0" />
+               <span asp-validation-for="Count" class="text-danger"></span>
+            </div>
+         </div>
+         <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+               <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+         </div>
+         <input asp-for="Gid" type="hidden" />
+      </form>
+   }
+}
 <p>
-   <button class="btn btn-default" id="getQuoteBtn">Get Quote</button>
+   @if (Model.ClosedReason == null && Model.PlayerStocks.Any())
+   {
+      <button class="btn btn-default" id="getQuoteBtn">Get Quote</button>
+   }
    <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid" class="btn btn-default">Return to game</a>
 </p>
 <div id="quoteDiv" style="display: none">

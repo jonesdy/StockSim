@@ -12,14 +12,16 @@ namespace StockSim.Controllers
       private readonly IStockService _stockService;
       private readonly IPlayerService _playerService;
       private readonly IGameService _gameService;
+      private readonly IClosedTimeService _closedTimeService;
 
-      public StockController(ILoggerFactory loggerFactory, IStockService stockService, IPlayerService playerService, IGameService gameService)
+      public StockController(ILoggerFactory loggerFactory, IStockService stockService, IPlayerService playerService, IGameService gameService, IClosedTimeService closedTimeService)
       {
          _log = loggerFactory.CreateLogger<StockController>();
 
          _stockService = stockService;
          _playerService = playerService;
          _gameService = gameService;
+         _closedTimeService = closedTimeService;
       }
 
       [HttpGet]
@@ -39,7 +41,8 @@ namespace StockSim.Controllers
             Gid = gid,
             GameTitle = _gameService.GetGameByGid(gid).Title,
             Balance = _playerService.GetPlayerBalance(gid, User.Identity.Name),
-            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name)
+            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name),
+            ClosedReason = _closedTimeService.IsStockMarketOpen()
          });
       }
 
@@ -51,6 +54,10 @@ namespace StockSim.Controllers
             return RedirectToAction("ViewGames", "Game");
          }
          if(!_playerService.IsUserInGame(model.Gid, User.Identity.Name))
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+         if(_closedTimeService.IsStockMarketOpen() != null)
          {
             return RedirectToAction("ViewGames", "Game");
          }
@@ -90,7 +97,8 @@ namespace StockSim.Controllers
             Gid = gid,
             GameTitle = _gameService.GetGameByGid(gid).Title,
             Balance = _playerService.GetPlayerBalance(gid, User.Identity.Name),
-            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name)
+            PlayerStocks = _stockService.GetPlayerStocks(gid, User.Identity.Name),
+            ClosedReason = _closedTimeService.IsStockMarketOpen()
          });
       }
 
@@ -102,6 +110,10 @@ namespace StockSim.Controllers
             return RedirectToAction("ViewGames", "Game");
          }
          if (!_playerService.IsUserInGame(model.Gid, User.Identity.Name))
+         {
+            return RedirectToAction("ViewGames", "Game");
+         }
+         if(_closedTimeService.IsStockMarketOpen() != null)
          {
             return RedirectToAction("ViewGames", "Game");
          }
