@@ -1,4 +1,5 @@
-﻿@model int?
+﻿@using StockSim.Models.Stock
+@model BuySellStockConfirmViewModel
 
 @{
    ViewData["Title"] = "Sell Stock Confirmation";
@@ -6,13 +7,13 @@
 
 <h2>@ViewData["Title"]</h2>
 
-@if (Model == null)
+@if (Model.FailureReason == null)
 {
-   <div class="alert alert-danger" role="alert">There was an error in selling the stock. The ticker symbol was invalid or you do not have enough stocks</div>
-   <p>Click <a href="@Url.Action("ViewGames", "Game")">here</a> to view the games</p>
+   <div class="alert alert-success" role="alert">Stocks sold successfully!</div>
+   <p>Click <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid">here</a> to return to the game</p>
 }
 else
 {
-   <div class="alert alert-success" role="alert">Stocks sold successfully!</div>
-   <p>Click <a href="@Url.Action("ViewGame", "Game")?gid=@Model">here</a> to view the game</p>
+   <div class="alert alert-danger" role="alert">There was an error when selling the stock. The error was "@Model.FailureReason"</div>
+   <p>Click <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid">here</a> to return to the game</p>
 }

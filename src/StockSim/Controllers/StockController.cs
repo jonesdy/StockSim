@@ -65,19 +65,27 @@ namespace StockSim.Controllers
          try
          {
             _stockService.BuyStock(model.Gid, User.Identity.Name, model.TickerSymbol.ToUpperInvariant(), model.Count);
-            return RedirectToAction("BuyStockConfirm", new { gid = model.Gid });
+            return View("BuyStockConfirm", new BuySellStockConfirmViewModel
+            {
+               Gid = model.Gid,
+               FailureReason = null
+            });
          }
          catch (Exception e)
          {
             _log.LogError($"{e.Message}\n{e.StackTrace}");
+            return View("BuyStockConfirm", new BuySellStockConfirmViewModel
+            {
+               Gid = model.Gid,
+               FailureReason = e.Message
+            });
          }
-         return RedirectToAction("BuyStockConfirm", null);
       }
 
-      [HttpGet]
-      public IActionResult BuyStockConfirm(int? gid)
+      [HttpPost]
+      public IActionResult BuyStockConfirm(BuySellStockConfirmViewModel model)
       {
-         return View(gid);
+         return View(model);
       }
 
       [HttpGet]
@@ -121,13 +129,21 @@ namespace StockSim.Controllers
          try
          {
             _stockService.SellStock(model.Gid, User.Identity.Name, model.TickerSymbol.ToUpperInvariant(), model.Count);
-            return RedirectToAction("SellStockConfirm", new { gid = model.Gid });
+            return View("SellStockConfirm", new BuySellStockConfirmViewModel
+            {
+               Gid = model.Gid,
+               FailureReason = null
+            });
          }
          catch(Exception e)
          {
             _log.LogError($"{e.Message}\n{e.StackTrace}");
+            return View("SellStockConfirm", new BuySellStockConfirmViewModel
+            {
+               Gid = model.Gid,
+               FailureReason = e.Message
+            });
          }
-         return RedirectToAction("SellStockConfirm", null);
       }
 
       [HttpGet]
