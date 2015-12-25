@@ -1,6 +1,7 @@
 ﻿using StockSim.Data.Access.Interface;
 using StockSim.Services.Interface;
 using System;
+using System.IO;
 
 namespace StockSim.Services
 {
@@ -15,7 +16,16 @@ namespace StockSim.Services
 
       public string IsStockMarketOpen()
       {
-         var easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+         TimeZoneInfo easternZone = null;
+         try
+         {
+            easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+         }
+         catch(FileNotFoundException e)
+         {
+            // Happens on linux
+            easternZone = TimeZoneInfo.FindSystemTimeZoneById("US/Eastern");
+         }
          var easternTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, easternZone);
          if(easternTime.DayOfWeek == DayOfWeek.Saturday || easternTime.DayOfWeek == DayOfWeek.Sunday)
          {
