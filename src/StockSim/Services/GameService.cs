@@ -19,6 +19,19 @@ namespace StockSim.Services
          _playerDao = playerDao;
       }
 
+      public IEnumerable<GameViewModel> GetOfficialGames()
+      {
+         return _gameDao.SelectOfficialGames().Select(x => new GameViewModel
+         {
+            Gid = x.Gid,
+            Title = x.Title,
+            Private = x.Private,
+            PlayerCount = _playerDao.SelectPlayerCountByGid(x.Gid),
+            StartingMoney = x.StartingMoney,
+            Official = x.Official
+         });
+      }
+
       public IEnumerable<GameViewModel> GetPublicGames()
       {
          return _gameDao.SelectPublicGames().Select(x => new GameViewModel
@@ -27,7 +40,8 @@ namespace StockSim.Services
             Title = x.Title,
             Private = x.Private,
             PlayerCount = _playerDao.SelectPlayerCountByGid(x.Gid),
-            StartingMoney = x.StartingMoney
+            StartingMoney = x.StartingMoney,
+            Official = x.Official
          });
       }
 
@@ -39,7 +53,8 @@ namespace StockSim.Services
             Title = x.Title,
             Private = x.Private,
             PlayerCount = _playerDao.SelectPlayerCountByGid(x.Gid),
-            StartingMoney = x.StartingMoney
+            StartingMoney = x.StartingMoney,
+            Official = x.Official
          });
       }
 

@@ -41,6 +41,7 @@ namespace StockSim.Controllers
       {
          return View(new ViewGamesViewModel
          {
+            OfficialGames = _gameService.GetOfficialGames(),
             PublicGames = _gameService.GetPublicGames(),
             UserGames = User.Identity.IsAuthenticated ?
                _gameService.GetGamesByUsername(User.Identity.Name)

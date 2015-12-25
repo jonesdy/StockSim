@@ -7,5 +7,6 @@
       public bool Private { get; set; }
       public int PlayerCount { get; set; }
       public decimal StartingMoney { get; set; }
+      public bool Official { get; set; }
    }
 }

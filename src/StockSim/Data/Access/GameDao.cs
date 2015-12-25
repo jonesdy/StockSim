@@ -31,7 +31,7 @@ namespace StockSim.Data.Access
       {
          using (var db = new StockSimDbContext())
          {
-            return db.GameDtos.Where(x => !x.Private).ToList();
+            return db.GameDtos.Where(x => !x.Private && !x.Official).ToList();
          }
       }
 
@@ -58,6 +58,14 @@ namespace StockSim.Data.Access
          using(var db = new StockSimDbContext())
          {
             return db.GameDtos.FirstOrDefault(x => x.Title == title);
+         }
+      }
+
+      public IList<GameDto> SelectOfficialGames()
+      {
+         using (var db = new StockSimDbContext())
+         {
+            return db.GameDtos.Where(x => x.Official).ToList();
          }
       }
    }

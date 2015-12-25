@@ -13,5 +13,6 @@ namespace StockSim.Data.Transfer
       public decimal StartingMoney { get; set; }
       public bool Private { get; set; }
       public DateTime StartTimestamp { get; set; }
+      public bool Official { get; set; }
    }
 }

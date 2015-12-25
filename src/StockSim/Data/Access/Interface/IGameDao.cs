@@ -10,5 +10,6 @@ namespace StockSim.Data.Access.Interface
       IList<GameDto> SelectPublicGames();
       IList<GameDto> SelectGamesByUsername(string username);
       GameDto SelectGameByTitle(string title);
+      IList<GameDto> SelectOfficialGames();
    }
 }

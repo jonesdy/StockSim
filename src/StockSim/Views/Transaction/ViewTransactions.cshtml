@@ -19,5 +19,5 @@
          <span class="list-group-item list-group-item-success"><b>@transaction.TickerSymbol</b> - @transaction.Timestamp.ToString("G") <span class="pull-right"><b>@transaction.Count</b> - $@transaction.Price each <b>+@((transaction.Count * transaction.Price).ToString("C"))</b></span></span>
       }
    }
-   <span class="list-group-item">Balance <span class="pull-right"><b>$@Model.Balance</b></span></span>
+   <span class="list-group-item">Current Balance <span class="pull-right"><b>@Model.Balance.ToString("C")</b></span></span>
 </div>

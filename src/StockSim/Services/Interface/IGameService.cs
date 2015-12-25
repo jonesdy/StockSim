@@ -5,6 +5,7 @@ namespace StockSim.Services.Interface
 {
    public interface IGameService
    {
+      IEnumerable<GameViewModel> GetOfficialGames();
       IEnumerable<GameViewModel> GetPublicGames();
       IEnumerable<GameViewModel> GetGamesByUsername(string username);
       GameViewModel GetGameByGid(int gid);

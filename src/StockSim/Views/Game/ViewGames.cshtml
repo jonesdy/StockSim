@@ -10,9 +10,16 @@
 
 <h3>Public Games</h3>
 <div class="list-group">
-   @if (!Model.PublicGames.Any())
+   @if (!Model.PublicGames.Any() && !Model.OfficialGames.Any())
    {
       <span class="list-group-item">No games available!</span>
+   }
+   @foreach (var officialGame in Model.OfficialGames)
+   {
+      <a href="@Url.Action("ViewGame")?gid=@officialGame.Gid" class="list-group-item list-group-item-success">
+         <span class="badge">@officialGame.PlayerCount</span>
+         <b>[OFFICIAL]</b> @officialGame.Title
+      </a>
    }
    @foreach (var publicGame in Model.PublicGames)
    {
