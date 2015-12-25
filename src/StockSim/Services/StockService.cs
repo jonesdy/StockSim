@@ -31,7 +31,15 @@ namespace StockSim.Services
             throw new InvalidOperationException("User is not in this game!");
          }
 
-         var quote = _stockQuoteDao.GetStockQuoteBySymbol(tickerSymbol);
+         StockQuoteDto quote = null;
+         try
+         {
+            quote = _stockQuoteDao.GetStockQuoteBySymbol(tickerSymbol);
+         }
+         catch(FormatException)
+         {
+            throw new InvalidOperationException("Unable to get stock quote!");
+         }
          if(quote == null)
          {
             throw new InvalidOperationException("Unable to get stock quote!");
@@ -85,7 +93,15 @@ namespace StockSim.Services
             throw new InvalidOperationException("User is not in this game!");
          }
 
-         var quote = _stockQuoteDao.GetStockQuoteBySymbol(tickerSymbol);
+         StockQuoteDto quote = null;
+         try
+         {
+            quote = _stockQuoteDao.GetStockQuoteBySymbol(tickerSymbol);
+         }
+         catch (FormatException)
+         {
+            throw new InvalidOperationException("Unable to get stock quote!");
+         }
          if (quote == null)
          {
             throw new InvalidOperationException("Unable to get stock quote!");

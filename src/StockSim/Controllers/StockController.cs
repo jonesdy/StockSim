@@ -29,11 +29,11 @@ namespace StockSim.Controllers
       {
          if (!User.Identity.IsAuthenticated)
          {
-            return RedirectToAction("ViewGame", "Game");
+            return RedirectToAction("ViewGames", "Game");
          }
          if(!_playerService.IsUserInGame(gid, User.Identity.Name))
          {
-            return RedirectToAction("ViewGame", "Game");
+            return RedirectToAction("ViewGames", "Game");
          }
 
          return View(new BuySellStockViewModel
