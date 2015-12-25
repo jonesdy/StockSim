@@ -1,7 +1,6 @@
 ﻿using StockSim.Data.Access.Interface;
 using StockSim.Services.Interface;
 using System;
-using System.IO;
 
 namespace StockSim.Services
 {
@@ -21,7 +20,7 @@ namespace StockSim.Services
          {
             easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
          }
-         catch(FileNotFoundException e)
+         catch(Exception)
          {
             // Happens on linux
             easternZone = TimeZoneInfo.FindSystemTimeZoneById("US/Eastern");
