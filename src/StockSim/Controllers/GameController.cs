@@ -55,7 +55,7 @@ namespace StockSim.Controllers
          var game = _gameService.GetGameByGid(gid);
          var playerStocks = new List<StockViewModel>();
          decimal? balance = null;
-         if (User.Identity.IsAuthenticated)
+         if (User.Identity.IsAuthenticated && _playerService.IsUserInGame(gid, User.Identity.Name))
          {
             playerStocks.AddRange(_stockService.GetPlayerStocks(gid, User.Identity.Name));
             balance = _playerService.GetPlayerBalance(gid, User.Identity.Name);
