@@ -12,7 +12,7 @@ namespace StockSim.Services
       private readonly ILogger _log;
       private const string Server = "openstocksim.com";
       private const int Port = 25;
-      private const string OkResponse = "250";
+      private const string GoAheadResponse = "354";
 
       public EmailService(ILoggerFactory loggerFactory)
       {
@@ -31,12 +31,16 @@ namespace StockSim.Services
                {
                   using (var writer = new StreamWriter(stream) { AutoFlush = true })
                   {
+                     reader.ReadLine();
                      writer.WriteLine(string.Format("HELO {0}", Server));
+                     reader.ReadLine();
                      writer.WriteLine("MAIL FROM: <noreply@openstocksim.com>");
+                     reader.ReadLine();
                      writer.WriteLine(string.Format("RCPT TO: <{0}>", email));
+                     reader.ReadLine();
                      writer.WriteLine("DATA");
                      var input = reader.ReadLine();
-                     if (!input.StartsWith(OkResponse))
+                     if (!input.StartsWith(GoAheadResponse))
                      {
                         throw new InvalidOperationException($"Failed to send email. Response from email server: {input}");
                      }
