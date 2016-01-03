@@ -1,4 +1,5 @@
 ﻿using StockSim.Data.Transfer;
+using System.Collections.Generic;
 
 namespace StockSim.Data.Access.Interface
 {
@@ -10,5 +11,6 @@ namespace StockSim.Data.Access.Interface
       bool DeletePlayerByGidAndUsername(int gid, string username);
       PlayerDto SelectPlayerByGidAndUsername(int gid, string username);
       decimal UpdateBalanceByPid(int pid, decimal balance);
+      IList<PlayerDto> SelectPlayersByGid(int gid);
    }
 }

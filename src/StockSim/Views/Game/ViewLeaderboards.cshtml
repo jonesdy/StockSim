@@ -1,0 +1,27 @@
+﻿@using StockSim.Models.Game
+@model ViewLeaderboardsViewModel
+
+@{ 
+   ViewData["Title"] = "Leaderboards - " + Model.GameTitle;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+   <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid" class="btn btn-default">Return to game</a>
+</p>
+
+<div class="list-group">
+   <span class="list-group-item">Username <span class="pull-right">Estimated Worth</span></span>
+   @if(!Model.Leaderboards.Any())
+   {
+      <span class="list-group-item">No players in this game!</span>
+   }
+   else
+   {
+      @for(var i = 0; i < Model.Leaderboards.Count; i++)
+      {
+         <span class="list-group-item">@(i + 1) - @Model.Leaderboards[i].Username <span class="pull-right">@Model.Leaderboards[i].EstimatedWorth.ToString("C")</span></span>
+      }
+   }
+</div>

@@ -153,5 +153,16 @@ namespace StockSim.Controllers
          }
          return View(false);
       }
+
+      [HttpGet]
+      public IActionResult ViewLeaderboards(int gid)
+      {
+         return View(new ViewLeaderboardsViewModel
+         {
+            Gid = gid,
+            GameTitle = _gameService.GetGameByGid(gid).Title,
+            Leaderboards = _gameService.GetLeaderboardsByGid(gid).OrderByDescending(x => x.EstimatedWorth).ToList()
+         });
+      }
    }
 }

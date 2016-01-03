@@ -11,5 +11,6 @@ namespace StockSim.Services.Interface
       GameViewModel GetGameByGid(int gid);
       GameViewModel AddNewGame(NewGameViewModel newGame);
       GameViewModel GetGameByTitle(string title);
+      IList<LeaderboardViewModel> GetLeaderboardsByGid(int gid);
    }
 }

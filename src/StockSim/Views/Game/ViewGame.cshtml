@@ -41,6 +41,7 @@ else if (User.Identity.IsAuthenticated)
       <a href="@Url.Action("BuyStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Buy Stock</a>
       <a href="@Url.Action("SellStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Sell Stock</a>
       <a href="@Url.Action("ViewTransactions", "Transaction")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Transactions</a>
+      <a href="@Url.Action("ViewLeaderboards")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Leaderboards</a>
    </p>
    <p>
       <a href="@Url.Action("LeaveGame")?gid=@Model.Game.Gid" class="btn btn-danger" role="button">Leave Game</a>

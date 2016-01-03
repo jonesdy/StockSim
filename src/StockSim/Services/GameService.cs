@@ -12,11 +12,15 @@ namespace StockSim.Services
    {
       private readonly IGameDao _gameDao;
       private readonly IPlayerDao _playerDao;
+      private readonly IStockQuoteDao _stockQuoteDao;
+      private readonly IStockDao _stockDao;
 
-      public GameService(IGameDao gameDao, IPlayerDao playerDao)
+      public GameService(IGameDao gameDao, IPlayerDao playerDao, IStockQuoteDao stockQuoteDao, IStockDao stockDao)
       {
          _gameDao = gameDao;
          _playerDao = playerDao;
+         _stockQuoteDao = stockQuoteDao;
+         _stockDao = stockDao;
       }
 
       public IEnumerable<GameViewModel> GetOfficialGames()
@@ -104,6 +108,32 @@ namespace StockSim.Services
             PlayerCount = _playerDao.SelectPlayerCountByGid(dto.Gid),
             StartingMoney = dto.StartingMoney
          };
+      }
+
+      public IList<LeaderboardViewModel> GetLeaderboardsByGid(int gid)
+      {
+         // Get all the players
+         var players = _playerDao.SelectPlayersByGid(gid);
+
+         // Get all the possible stocks
+         var stocks = new List<StockDto>();
+         foreach(var player in players)
+         {
+            stocks.AddRange(_stockDao.SelectStocksByPid(player.Pid));
+         }
+         var symbols = stocks.Select(x => x.TickerSymbol).Distinct().ToList();
+
+         // Get those quotes
+         var quotes = _stockQuoteDao.GetStockQuotesBySymbols(symbols);
+
+         // Mash stuff together to get estimated worth
+         return players.Select(player => new LeaderboardViewModel
+         {
+            Username = player.Username,
+            EstimatedWorth = stocks.Where(stock => stock.Pid == player.Pid)
+               .Select(stock => quotes.First(quote => quote.Symbol == stock.TickerSymbol).Cost * stock.Count).Sum()
+               + player.Balance
+         }).ToList();
       }
    }
 }

@@ -1,5 +1,6 @@
 ﻿using StockSim.Data.Access.Interface;
 using StockSim.Data.Transfer;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StockSim.Data.Access
@@ -66,6 +67,14 @@ namespace StockSim.Data.Access
             existing.Balance = balance;
             db.SaveChanges();
             return db.PlayerDtos.First(x => x.Pid == pid).Balance;
+         }
+      }
+
+      public IList<PlayerDto> SelectPlayersByGid(int gid)
+      {
+         using (var db = new StockSimDbContext())
+         {
+            return db.PlayerDtos.Where(x => x.Gid == gid).ToList();
          }
       }
    }

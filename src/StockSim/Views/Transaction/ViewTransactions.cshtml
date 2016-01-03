@@ -6,6 +6,11 @@
 }
 
 <h2>@ViewData["Title"]</h2>
+
+<p>
+   <a href="@Url.Action("ViewGame", "Game")?gid=@Model.Gid" class="btn btn-default">Return to game</a>
+</p>
+
 <div class="list-group">
    <span class="list-group-item">Starting Balance <span class="pull-right"><b>@Model.StartingMoney.ToString("C")</b></span></span>
    @foreach(var transaction in Model.Transactions.OrderBy(x => x.Timestamp))
