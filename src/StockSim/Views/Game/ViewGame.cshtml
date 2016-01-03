@@ -11,7 +11,7 @@
    <h4>Starting Money: @Model.Game.StartingMoney.ToString("C") - Player Count: @Model.Game.PlayerCount</h4>
 </p>
 
-@if(Model.UserCanJoin)
+@if (Model.UserCanJoin)
 {
    <p>
       <a href="@Url.Action("JoinGame")?gid=@Model.Game.Gid" class="btn btn-default" role="button">Join Game</a>
@@ -26,7 +26,7 @@ else if (User.Identity.IsAuthenticated)
          {
             <span class="list-group-item">You don't own any stocks!</span>
          }
-         @foreach(var stock in Model.PlayerStocks)
+         @foreach (var stock in Model.PlayerStocks)
          {
             <span class="list-group-item">@stock.TickerSymbol<span class="badge">@stock.Count</span></span>
          }
@@ -37,13 +37,19 @@ else if (User.Identity.IsAuthenticated)
       }
    </p>
    <br />
-   <p>
+}
+<p>
+   @if (User.Identity.IsAuthenticated && !Model.UserCanJoin)
+   {
       <a href="@Url.Action("BuyStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Buy Stock</a>
       <a href="@Url.Action("SellStock", "Stock")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">Sell Stock</a>
       <a href="@Url.Action("ViewTransactions", "Transaction")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Transactions</a>
-      <a href="@Url.Action("ViewLeaderboards")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Leaderboards</a>
-   </p>
-   <p>
+   }
+   <a href="@Url.Action("ViewLeaderboards")?gid=@Model.Game.Gid" class="btn btn-primary" role="button">View Leaderboards</a>
+</p>
+<p>
+   @if (User.Identity.IsAuthenticated && !Model.UserCanJoin)
+   {
       <a href="@Url.Action("LeaveGame")?gid=@Model.Game.Gid" class="btn btn-danger" role="button">Leave Game</a>
-   </p>
-}
+   }
+</p>
